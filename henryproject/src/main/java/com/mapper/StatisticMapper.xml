@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.StatisticMapper">
+    <resultMap id="StatisticResult" type="com.entity.Statistic">
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="status" property="status" />
+        <result column="biko" property="biko" />
+        <result column="creation_time" property="creation_time" />
+        <result column="modification_time" property="modification_time" />
+    </resultMap>
+	<select id="getAllStatistic" resultMap="StatisticResult">
+	SELECT id, name, status, biko, creation_time,modification_time
+	FROM statistic
+	ORDER BY id ASC;
+	</select>
+	<update id="updateStatisticById">
+	UPDATE statistic set name = #{name}, biko = #{biko}, status = #{status}
+	WHERE id = #{id}
+	</update>
+	<insert id="insertStatisticById">
+	INSERT INTO  statistic (name,status,biko)
+	VALUES (#{name},#{status},#{biko})
+	</insert>
+	<delete id="deleteStatisticById">
+	DELETE FROM statistic WHERE id = #{id};
+	</delete>
+</mapper>

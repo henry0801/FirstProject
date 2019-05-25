@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.TestMapper">
+    <resultMap id="TestResult" type="com.entity.Test">
+        <result column="userid" property="userid" />
+        <result column="username" property="username" />
+    </resultMap>
+    <select id="getTest" resultMap="TestResult" parameterType="int">
+        select userid, username
+        from users
+        where userid = #{userid}
+    </select>
+
+	<select id="getTestAll" resultMap="TestResult">
+		select userid, username
+		from users;
+	</select>
+</mapper>

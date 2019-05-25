@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.WorkmonthMapper">
+    <resultMap id="WorkmonthResult" type="com.entity.Workmonth">
+        <result column="userid" property="userid" />
+        <result column="year" property="year" />
+        <result column="month" property="month" />
+        <result column="day" property="day" />
+        <result column="start_h" property="start_h" />
+        <result column="start_m" property="start_m" />
+        <result column="end_h" property="end_h" />
+        <result column="end_m" property="end_m" />
+        <result column="biko1" property="biko1" />
+        <result column="biko2" property="biko2" />
+        <result column="creation_time" property="creation_time" />
+        <result column="modification_time" property="modification_time" />
+    </resultMap>
+	<select id="getWorkmonthById" resultMap="WorkmonthResult">
+	SELECT userid, year, month, day, start_h, start_m, end_h, end_m, biko1, biko2, creation_time, modification_time
+	FROM workmonth
+	WHERE userid = #{userid}
+	AND year = #{year}
+	AND month = #{month}
+	ORDER BY userid ASC;
+	</select>
+	<update id="updateWorkmonthById">
+	UPDATE workmonth set start_h = #{start_h}, start_m = #{start_m}, end_h = #{end_h}, end_m = #{end_m}, biko1 = #{biko1}, biko2 = #{biko2}
+	WHERE userid = #{userid}
+	AND year = #{year}
+	AND month = #{month}
+	AND day = #{day}
+	</update>
+	<insert id="insertWorkmonthById">
+	INSERT INTO  workmonth (userid, year, month, day, start_h, start_m, end_h, end_m, biko1, biko2)
+	VALUES (#{userid},#{year},#{month},#{day},#{start_h},#{start_m},#{end_h},#{end_m},#{biko1},#{biko2})
+	</insert>
+	<delete id="deleteWorkmonthById">
+	DELETE FROM workmonth WHERE userid = #{userid};
+	</delete>
+</mapper>
