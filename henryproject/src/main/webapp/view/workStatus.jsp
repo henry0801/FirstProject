@@ -52,7 +52,7 @@ session.setAttribute("monthList",monthList);
 		月
 
 		<input type="submit" name="search" value="検索"/><br/><br/>
-		<input type="submit" name="test1" value="test1"/><input type="submit" name="test2" value="test2"/>${message}<br/>
+		<input type="submit" name="test1" value="test1"/><input type="submit" name="test2" value="test2"/>message:${message}<br/>
         <table border="1">
             <tbody>
             	<tr class="graytd">
