@@ -2,7 +2,6 @@ package com.common;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,52 +10,61 @@ public class WorkTimeCal {
 
 	Logger logger = LoggerFactory.getLogger(WorkTimeCal.class);
 
+	SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+	final long min_15 = 15 * 60 * 1000;
+	String[] restStr = {"12:15","12:30","12:45","13:00","18:00"};
 
-	public double calWorkTime(String start,String end) {
-
-		double workHours_am = suboftime(start,"12:00");
-        double workHours_pm = suboftime("13:00",end);
-
-        if(!"".equals(end) && suboftime("17:45",end)>0){
-        	workHours_pm = workHours_pm - 0.25;
-        }
-
-        double workHours = workHours_am+workHours_pm;
+	public double calWorkTime(String start, String end) {
+		double workHours = calTimePassing(start, end);
 
 		return workHours;
-
 	}
 
-	public double calOverTime(String start,String end) {
-
-		double overHours = suboftime("18:00", end);
+	public double calOverTime(String start, String end) {
+		double overHours = calTimePassing("18:00", end);
 
 		return overHours;
-
 	}
 
-	//time2-time1
-	public double suboftime(String start,String end) {
-		//工数計算
-		SimpleDateFormat timeformat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+	public double calTimePassing(String start, String end) {
 
-		double workhours = 0.00;
+		double worktime_double = 0.00;
+
 		try {
+			long worktime_long = 0;
 
-			Date d1 = timeformat.parse("1990/01/01 "+start);
-			Date d2 = timeformat.parse("1990/01/01 "+end);
+			long time1 = format.parse(start).getTime();
+			long time2 = format.parse(end).getTime();
 
-		    workhours=(d2.getTime() - d1.getTime())%(24*3600*1000);
-		    workhours = workhours/(3600*1000);
+			while (time1 < time2) {
+				time1 += min_15;
 
-		    if (workhours<0) {
-		    	workhours = 0.00;
+				if (ifNotContain(restStr, time1)) {
+					worktime_long += min_15;
+				}
 			}
+
+			worktime_double = longToDouble(worktime_long);
 
 		} catch (ParseException e) {
 			logger.debug(e.getMessage());
 		}
-		return workhours;
+		return worktime_double;
+	}
+
+	public boolean ifNotContain(String[] arr, long targetValue) throws ParseException {
+		for (String str : arr) {
+			long l = format.parse(str).getTime();
+			if (l == targetValue)
+				return false;
+		}
+		return true;
+	}
+
+	public double longToDouble(long longValue) {
+		double worktime_double = longValue % (24 * 3600 * 1000);
+
+		return worktime_double / (3600 * 1000);
 	}
 
 }
