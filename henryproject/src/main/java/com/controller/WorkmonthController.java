@@ -49,7 +49,7 @@ import com.service.WorkmonthService;
 
 @Controller
 @RequestMapping("/workInput")
-@SessionAttributes(value={"workmonths","name","year","month"})
+@SessionAttributes({"workmonths", "name", "year", "month"})
 public class WorkmonthController {
 
 	Logger logger = LoggerFactory.getLogger(WorkmonthController.class);
@@ -171,7 +171,10 @@ public class WorkmonthController {
 		}
 
 
+		map.put("year", workYear);
+		map.put("month", workMonth);
 		map.put("workmonths", workmonths);
+
         model.addAttribute(workmonthForm);
         model.addAttribute("name",map.get("name"));
         model.addAttribute("workmonths", workmonths);
@@ -266,7 +269,7 @@ public class WorkmonthController {
 
 		//既存のデータがあれば、削除する
 		if (workmonths != null && workmonths.size()>0) {
-			workmonthService.deleteWorkmonthById(workmonths);
+			workmonthService.deleteWorkmonthById(id,workYear,workMonth);
 		}
 
 		int year = Integer.parseInt(workYear);
@@ -336,9 +339,10 @@ public class WorkmonthController {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 
 		try {
+			String filePath = Thread.currentThread().getContextClassLoader().getResource("work.xls").getFile();
 
-			String filePath = getClass().getResource("/abc.xls").getPath();
-			filePath = filePath.substring(1);
+//			String filePath = getClass().getResource("/work.xls").getPath();
+//			filePath = filePath.substring(1);
 			FileInputStream fileInputStream = new FileInputStream(new File(filePath));
 
 			workbook = WorkbookFactory.create(fileInputStream);
@@ -398,7 +402,6 @@ public class WorkmonthController {
 			InputStream inputStream = new ByteArrayInputStream(content);
 
 			response.setHeader("Content-Disposition", "attachment;filename=\"" + URLEncoder.encode(outputfileNm+".xls", "UTF-8")+"\"");
-			//response.setHeader("Content-Disposition", "attachment; filename=" + java.net.URLEncoder.encode(fileNm, "UTF-8"));
 
 			ServletOutputStream out = response.getOutputStream();
 

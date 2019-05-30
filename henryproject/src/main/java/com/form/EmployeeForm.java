@@ -7,7 +7,6 @@ public class EmployeeForm {
 	private String name;
     private String memo;
 
-
 	public String getId() {
 		return id;
 	}

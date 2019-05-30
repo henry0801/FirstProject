@@ -52,10 +52,8 @@ public class WorkmonthService {
         }
     }
 
-    public void deleteWorkmonthById(List<WorkmonthDto> workmonths) {
-    	for (WorkmonthDto dto : workmonths) {
-    		workmonthMapper.deleteWorkmonthById(dto);
-    		logger.info("DELETE The Workmonth Over!");
-        }
+    public void deleteWorkmonthById(String userid, String year, String month) {
+    	workmonthMapper.deleteWorkmonthById(userid, year, month);
+    	logger.info("DELETE The Workmonth Over!");
     }
 }

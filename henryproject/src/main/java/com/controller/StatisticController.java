@@ -39,6 +39,13 @@ public class StatisticController {
 		return "statistic";
 	}
 
+    //戻るボタン
+    @RequestMapping(value = "", params = "return", method = RequestMethod.POST)
+    public String toMenu(@ModelAttribute StatisticForm form, Model model) {
+
+        return "menu";
+    }
+
 	@RequestMapping(value = "", params = "save", method = RequestMethod.POST)
 	public String save(@ModelAttribute StatisticForm form, Model model) {
 

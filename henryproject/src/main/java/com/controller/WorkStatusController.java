@@ -29,17 +29,26 @@ public class WorkStatusController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String list(@ModelAttribute WorkStatusForm workStatusForm, HttpServletRequest request, Model model,ModelMap map) {
 
-    	Calendar cal = Calendar.getInstance();
-    	String year = String.valueOf(cal.get(Calendar.YEAR));
-    	String month = String.format("%02d", cal.get(Calendar.MONTH)+1);
+        String workYear = workStatusForm.getWorkYear();
+        String workMonth = workStatusForm.getWorkMonth();
 
-    	workStatusForm.setWorkYear(year);
-    	workStatusForm.setWorkMonth(month);
+        if (workYear == null || workMonth == null) {
+           Calendar cal = Calendar.getInstance();
+           workYear = String.valueOf(cal.get(1));
+           workMonth = String.format("%02d", cal.get(2) + 1);
+        }
 
-    	map.put("year", year);
-    	map.put("month", month);
+        workStatusForm.setWorkYear(workYear);
+        workStatusForm.setWorkMonth(workMonth);
 
     	return showlist(workStatusForm, request,model,map);
+    }
+
+    //戻るボタン
+    @RequestMapping(value = "", params = "return", method = RequestMethod.POST)
+    public String toMenu(@ModelAttribute WorkStatusForm workStatusForm, Model model, ModelMap map) {
+
+        return "menu";
     }
 
     @RequestMapping(value = "", params = "search", method = RequestMethod.POST)
@@ -52,6 +61,8 @@ public class WorkStatusController {
         model.addAttribute("workStatusForm", workStatusForm);
         model.addAttribute("employees", employees);
 
+        map.put("year", workYear);
+        map.put("month", workMonth);
         map.put("employees", employees);
 
         return "workStatus";

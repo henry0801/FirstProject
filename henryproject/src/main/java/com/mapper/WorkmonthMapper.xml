@@ -36,6 +36,10 @@
 	VALUES (#{userid},#{year},#{month},#{day},#{start_h},#{start_m},#{end_h},#{end_m},#{biko1},#{biko2})
 	</insert>
 	<delete id="deleteWorkmonthById">
-	DELETE FROM workmonth WHERE userid = #{userid};
+	DELETE
+	FROM workmonth
+	WHERE userid = #{userid}
+	AND year = #{year}
+	AND month = #{month}
 	</delete>
 </mapper>

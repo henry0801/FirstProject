@@ -5,15 +5,20 @@
 <!DOCTYPE>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=0.6">
-
 <title>統計</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width">
+<link href="css/style.css" rel="stylesheet" type="text/css" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
 var count = 0;
 $(document).ready(function(){
-	  $("#add").click(function(){
+	//機種に合わせて表示
+	var scalevalue = 0.0016 * screen.width;
+	var content = 'width=device-width,height=device-height,initial-scale='+scalevalue;
+	document.getElementsByName('viewport')[0].setAttribute('content', content);
+
+	$("#add").click(function(){
 
 		  var new_tr = $('#foradd').clone();
 		  new_tr.show();
@@ -30,20 +35,27 @@ function notshow(object){
 	object.parentNode.parentNode.style.display = "none";
 }
 </script>
-<style>
-</style>
 </head>
 <body>
     <h1>
         自分の意向を選択してください
     </h1>
     <form:form action="/statistic" modelAttribute="StatisticForm">
-    <input type="submit" name="refresh" value="刷新"/>
-    <input type="submit" name="save" value="保存"/><br/>
+        				<table border="0" id="itemtable">
+						<tr>
+							<td><input type="submit" name="return" value="戻る" /><td>
+						</tr>
+						<tr>
+							<td><input type="submit" name="refresh" value="再表示"/></td>
+							<td><input type="submit" name="save" value="保存"/></td>
+						</tr>
+					</table><br/>
+
+
     <div>
         <table border="1" id="table1" style="display: table-cell">
             <tbody>
-            	<tr>
+            	<tr class="graytd">
             	<th></th>
                 <th>氏名</th>
                 <th>状況</th>

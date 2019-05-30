@@ -7,7 +7,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=2.0"/>
-<title><c:out value="${title}"></c:out></title>
+<title>勤務入力状況 </title>
 </head>
 <style>
 tr.graytd{
@@ -42,17 +42,21 @@ session.setAttribute("monthList",monthList);
         勤務入力状況
     </h1>
     <form:form action="/workStatus" modelAttribute="workStatusForm">
-		<form:select path="workYear">
-			<form:options items="${yearList}" />
-		</form:select>
-		年
-		<form:select path="workMonth">
-			<form:options items="${monthList}" />
-		</form:select>
-		月
+    				<table border="0" id="itemtable">
+						<tr>
+							<td><input type="submit" name="return" value="戻る" /><td>
+						</tr>
+						<tr>
+							<td><form:select path="workYear">
+									<form:options items="${yearList}" />
+								</form:select>年</td>
+							<td><form:select path="workMonth">
+									<form:options items="${monthList}" />
+								</form:select>月</td>
+							<td><input type="submit" name="search" value="検索"/></td>
+						</tr>
+					</table>
 
-		<input type="submit" name="search" value="検索"/><br/><br/>
-		<input type="submit" name="test1" value="test1"/><input type="submit" name="test2" value="test2"/>message:${message}<br/>
         <table border="1">
             <tbody>
             	<tr class="graytd">
@@ -72,7 +76,7 @@ session.setAttribute("monthList",monthList);
                         	<a href="/workInput/link?id=${employee.userid}&name=${employee.username}">
                         	<c:choose>
                         	<c:when test="${employee.countOfWorkInput>0}" >入力あり</c:when>
-                        	<c:otherwise>入力なし</c:otherwise>
+                        	<c:otherwise>未入力</c:otherwise>
                         	</c:choose>
                         	</a>
                         </td>
@@ -82,6 +86,9 @@ session.setAttribute("monthList",monthList);
                 </tr>
             </tbody>
         </table>
+
+        <br/>
+        <input type="submit" name="test1" value="test1"/><input type="submit" name="test2" value="test2"/>message:${message}<br/>
     </form:form>
 </body>
 </html>

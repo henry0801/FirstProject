@@ -13,6 +13,6 @@ public interface WorkmonthMapper {
 
     void insertWorkmonthById(WorkmonthDto sDto);
 
-    void deleteWorkmonthById(WorkmonthDto sDto);
+    void deleteWorkmonthById(String userid,String year,String month);
 
 }

@@ -8,8 +8,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache"/>
-<meta name="viewport" content="width=device-width, initial-scale=0.48" />
-<title>勤務表入力</title>
+<meta name="viewport" content="width=device-width" />
+<title>勤務表実績（${name}）</title>
 </head>
 <style>
 tr.graytd{
@@ -27,6 +27,13 @@ tr.odd{
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
+window.onload = function(){
+	//機種に合わせて表示
+	var scalevalue = 0.00128 * screen.width;
+	var content = 'width=device-width,height=device-height,initial-scale='+scalevalue;
+	document.getElementsByName('viewport')[0].setAttribute('content', content);
+	}
+
 function cleardata(object){
 	var tr = object.parentNode.parentNode;
 
@@ -55,6 +62,15 @@ function clearselect(select){
     }
 }
 
+
+	function show_confirm() {
+		var row = table1.rows.length;
+		if(row==1){
+			return true;
+		}
+
+		return confirm("該当月データを最初から作り直しますか？");
+	}
 </script>
 <body>
 
@@ -82,7 +98,7 @@ session.setAttribute("yearList",yearList);
 session.setAttribute("monthList",monthList);
 %>
 
-	<h1><u>勤務表実績（${name}）</u></h1>
+	<h1>勤務表実績（${name}）</h1>
 	<form:form action="/workInput" modelAttribute="workmonthForm">
 	<input type="hidden" name="id" value="${workmonthForm.id}">
 	<input type="hidden" name="totalWorkHours" value="${workmonthForm.totalWorkHours}">
@@ -106,7 +122,7 @@ session.setAttribute("monthList",monthList);
 							<td><input type="submit" name="serach" value="検索" /></td>
 						</tr>
 						<tr>
-							<td><input type="submit" name="recreate" value="新規作成" /></td>
+							<td><input type="submit" name="recreate" onclick="return show_confirm();" value="新規作成" /></td>
 							<td><input type="submit" name="save" value="保存" /></td>
 							<td><input type="submit" name="print" value="勤务表印刷" /></td>
 						</tr>

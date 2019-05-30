@@ -1,0 +1,13 @@
+@charset "UTF-8";
+tr.graytd{
+	background-color: rgb(219, 219, 219);
+}
+td.graytd{
+	background-color: rgb(219, 219, 219);
+}
+tr.even{
+	background-color: white;
+}
+tr.odd{
+	background-color: rgb(244, 244, 225);
+}

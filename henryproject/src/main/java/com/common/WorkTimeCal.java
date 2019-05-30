@@ -12,7 +12,6 @@ public class WorkTimeCal {
 	Logger logger = LoggerFactory.getLogger(WorkTimeCal.class);
 
 
-
 	public double calWorkTime(String start,String end) {
 
 		double workHours_am = suboftime(start,"12:00");

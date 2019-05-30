@@ -199,8 +199,8 @@
 
 		<dependency>
 			<groupId>com.google.appengine</groupId>
-			<artifactId>appengine-api-1.0-sdk</artifactId>
-			<version>1.9.71</version>
+			<artifactId>appengine-maven-plugin</artifactId>
+			<version>1.9.74</version>
 		</dependency>
 
 		<dependency>
