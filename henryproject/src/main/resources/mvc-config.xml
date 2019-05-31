@@ -23,17 +23,19 @@
        <property name="basename" value="classpath:ValidatorMessages" />
     </bean>
 
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<!-- for Local Test -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
 		<property name="url" value="jdbc:mysql://google/company?cloudSqlInstance=eclipsedemo:asia-northeast1:eclipsemysql&amp;socketFactory=com.google.cloud.sql.mysql.SocketFactory&amp;useSSL=false" />
-        <property name="username" value="admin"/>
-        <property name="password" value="12345"/>
+        <property name="username" value="xxxxx"/>
+        <property name="password" value="xxxxx"/>
     </bean>
- 	<!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <!-- for GCP enviroment -->
+<!--  	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.GoogleDriver"/>
 		<property name="url" value="jdbc:google:mysql://eclipsedemo:asia-northeast1:eclipsemysql/company" />
-        <property name="username" value="admin"/>
-        <property name="password" value="12345"/>
+        <property name="username" value="xxxxx"/>
+        <property name="password" value="xxxxx"/>
     </bean> -->
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
