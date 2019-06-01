@@ -17,9 +17,9 @@ tr.graytd{
 <%
 Map<String, String> yearList = new TreeMap<String, String>();
 yearList.put("", "");
-yearList.put("2018", "2018");
 yearList.put("2019", "2019");
 yearList.put("2020", "2020");
+yearList.put("2021", "2021");
 Map<String, String> monthList = new TreeMap<String, String>();
 monthList.put("", "");
 monthList.put("01", "01");

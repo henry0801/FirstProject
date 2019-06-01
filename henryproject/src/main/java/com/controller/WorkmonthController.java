@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
 
 import javax.servlet.ServletOutputStream;
@@ -41,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.common.CrunchifyGetPropertyValues;
 import com.common.WorkTimeCal;
 import com.dto.WorkmonthDto;
 import com.form.WorkStatusForm;
@@ -92,6 +94,8 @@ public class WorkmonthController {
 	@RequestMapping(value = "", params = "serach", method = RequestMethod.POST)
 	public String viewBuilder(@ModelAttribute WorkmonthForm workmonthForm, Model model,ModelMap map) {
 
+
+
 		String workYear = workmonthForm.getWorkYear();
 		String workMonth =workmonthForm.getWorkMonth();
 		if (workYear == null || workMonth == null) {
@@ -120,25 +124,14 @@ public class WorkmonthController {
 
 			for (int i = 0; i < workmonths.size(); i++) {
 				WorkmonthDto dto = workmonths.get(i);
-				String year = dto.getYear();
-				String month = dto.getMonth();
-				String day = dto.getDay();
+				String dateStr = dto.getYear()+dto.getMonth()+dto.getDay();
 
 				try {
-					Date date = fmt.parse(year+month+day);
+					Date date = fmt.parse(dateStr);
 					dto.setDate(date);
 
-					Calendar cal = Calendar.getInstance();
-					cal.setTime(date);
-					if(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
-						dto.setWeekendflg("1");
-			        }else {
-			        	dto.setWeekendflg("0");
-					}
-
 				} catch (ParseException e) {
-					// TODO 自動生成された catch ブロック
-					e.printStackTrace();
+					logger.debug("ParseException: "+e.getMessage());
 				}
 
 				start_h[i] = dto.getStart_h();
@@ -158,7 +151,6 @@ public class WorkmonthController {
 				addOverHours = addOverHours + overHours;
 				totalworkHours = totalworkHours + workHours;
 				dto.setAddOverHours(String.format("%.2f", addOverHours));
-
 			}
 
 			workmonthForm.setStart_h(start_h);
@@ -235,8 +227,6 @@ public class WorkmonthController {
 						}
 					}
 				}
-
-
 			}
 		}
 
@@ -277,25 +267,47 @@ public class WorkmonthController {
 	    int day = 1;
 
 		Calendar cal = Calendar.getInstance();
-
 		cal.set(year, month-1, 1);
-
-		int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 
 		List<WorkmonthDto> workmonths_new = new ArrayList<>();
 
+		//Holidayリソース取得
+		Properties holidayProperties = null;
+		try {
+			holidayProperties = new CrunchifyGetPropertyValues().getPropValue();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			logger.debug("IOException: "+e1.getMessage());
+		}
+
+		int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+		logger.debug("lastday:"+String.valueOf(lastDay));
+
 		for (int i = 0; i < lastDay; i++) {
 			WorkmonthDto workmonthDto = new WorkmonthDto();
-
 			workmonthDto.setUserid(id);
-			workmonthDto.setYear(String.valueOf(year));
-			workmonthDto.setMonth(String.format("%02d", month));
-			workmonthDto.setDay(String.format("%02d", day));
 
-			workmonthDto.setBiko1("");
-			workmonthDto.setBiko2("");
+			String yearStr = String.valueOf(year);
+			String monthStr = String.format("%02d", month);
+			String dayStr = String.format("%02d", day);
 
-			if(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
+			String dateStr = yearStr+monthStr+dayStr;
+
+			workmonthDto.setYear(yearStr);
+			workmonthDto.setMonth(monthStr);
+			workmonthDto.setDay(dayStr);
+
+			String biko1 = "";
+			String biko2 = "";
+
+			boolean holidayFlg = holidayProperties != null &&  holidayProperties.get(dateStr)!=null;
+			boolean weekendFlg = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
+			workmonthDto.setWeekendflg(String.valueOf(weekendFlg ? 1 : 0));
+			workmonthDto.setHolidayflg(String.valueOf(holidayFlg ? 1 : 0));
+
+			//出勤時間設定
+			if(holidayFlg || weekendFlg){
 				workmonthDto.setStart_h("");
 				workmonthDto.setStart_m("");
 				workmonthDto.setEnd_h("");
@@ -306,6 +318,13 @@ public class WorkmonthController {
 				workmonthDto.setEnd_h("18");
 				workmonthDto.setEnd_m("00");
 			}
+
+			if (holidayFlg) {
+				biko2 = holidayProperties.get(dateStr).toString();
+			}
+
+			workmonthDto.setBiko1(biko1);
+			workmonthDto.setBiko2(biko2);
 
 			workmonths_new.add(workmonthDto);
 
@@ -381,7 +400,7 @@ public class WorkmonthController {
 					cell_overHours.setCellValue(workmonth.getOverHours());
 					cell_addOverHours.setCellValue(workmonth.getAddOverHours());
 					cell_biko1.setCellValue(workmonth.getBiko1());
-					cell_biko1.setCellValue(workmonth.getBiko2());
+					cell_biko2.setCellValue(workmonth.getBiko2());
 
 
 				}

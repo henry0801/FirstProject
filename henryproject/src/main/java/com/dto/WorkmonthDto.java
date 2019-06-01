@@ -21,8 +21,16 @@ public class WorkmonthDto implements Serializable{
     private Date date;
 
     private String weekendflg;
+    private String holidayflg;
 
-    private String workHours;
+    public String getHolidayflg() {
+		return holidayflg;
+	}
+	public void setHolidayflg(String holidayflg) {
+		this.holidayflg = holidayflg;
+	}
+
+	private String workHours;
     private String overHours;
     private String addOverHours;
 

@@ -17,6 +17,8 @@ public class Workmonth {
     private String biko2;
     private Date creation_time;
     private Date modification_time;
+    private String weekendflg;
+    private String holidayflg;
 	public String getUserid() {
 		return userid;
 	}
@@ -88,6 +90,18 @@ public class Workmonth {
 	}
 	public void setModification_time(Date modification_time) {
 		this.modification_time = modification_time;
+	}
+	public String getWeekendflg() {
+		return weekendflg;
+	}
+	public void setWeekendflg(String weekendflg) {
+		this.weekendflg = weekendflg;
+	}
+	public String getHolidayflg() {
+		return holidayflg;
+	}
+	public void setHolidayflg(String holidayflg) {
+		this.holidayflg = holidayflg;
 	}
 
 }

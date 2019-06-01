@@ -13,11 +13,13 @@
         <result column="end_m" property="end_m" />
         <result column="biko1" property="biko1" />
         <result column="biko2" property="biko2" />
+        <result column="weekendflg" property="weekendflg" />
+        <result column="holidayflg" property="holidayflg" />
         <result column="creation_time" property="creation_time" />
         <result column="modification_time" property="modification_time" />
     </resultMap>
 	<select id="getWorkmonthById" resultMap="WorkmonthResult">
-	SELECT userid, year, month, day, start_h, start_m, end_h, end_m, biko1, biko2, creation_time, modification_time
+	SELECT userid, year, month, day, start_h, start_m, end_h, end_m, biko1, biko2, creation_time, modification_time,weekendflg,holidayflg
 	FROM workmonth
 	WHERE userid = #{userid}
 	AND year = #{year}
@@ -32,8 +34,8 @@
 	AND day = #{day}
 	</update>
 	<insert id="insertWorkmonthById">
-	INSERT INTO  workmonth (userid, year, month, day, start_h, start_m, end_h, end_m, biko1, biko2)
-	VALUES (#{userid},#{year},#{month},#{day},#{start_h},#{start_m},#{end_h},#{end_m},#{biko1},#{biko2})
+	INSERT INTO  workmonth (userid, year, month, day, start_h, start_m, end_h, end_m, biko1, biko2,weekendflg,holidayflg)
+	VALUES (#{userid},#{year},#{month},#{day},#{start_h},#{start_m},#{end_h},#{end_m},#{biko1},#{biko2},#{weekendflg},#{holidayflg})
 	</insert>
 	<delete id="deleteWorkmonthById">
 	DELETE

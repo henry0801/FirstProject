@@ -164,9 +164,9 @@ session.setAttribute("monthList",monthList);
             <input type="hidden" name="year" value="${workmonth.year}">
             <input type="hidden" name="month" value="${workmonth.month}">
             <input type="hidden" name="day" value="${workmonth.day}">
-			<tr class="${workmonth.weekendflg == '1' ? 'even' : 'odd'}">
+			<tr class="${(workmonth.weekendflg == '1' || workmonth.holidayflg == '1') ? 'even' : 'odd'}">
 				<c:choose>
-				<c:when test="${workmonth.weekendflg == '1' }" >
+				<c:when test="${workmonth.weekendflg == '1' || workmonth.holidayflg == '1'}" >
 				<td style="color:red">
 				<fmt:formatDate value="${workmonth.date}" type="DATE" pattern="dd日（E）" />
 				</td>
