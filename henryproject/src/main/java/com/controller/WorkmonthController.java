@@ -195,43 +195,44 @@ public class WorkmonthController {
 		String[] biko1 = form.getBiko1();
 		String[] biko2 = form.getBiko2();
 
-		for (int i = 0; i < userid.length; i++) {
+		if (userid!=null) {
+			for (int i = 0; i < userid.length; i++) {
 
-			WorkmonthDto workmonthDto = new WorkmonthDto();
-			workmonthDto.setUserid(userid[i]);
-			workmonthDto.setYear(year[i]);
-			workmonthDto.setMonth(month[i]);
-			workmonthDto.setDay(day[i]);
-			workmonthDto.setStart_h(start_h[i]);
-			workmonthDto.setStart_m(start_m[i]);
-			workmonthDto.setEnd_h(end_h[i]);
-			workmonthDto.setEnd_m(end_m[i]);
-			workmonthDto.setBiko1(biko1[i]);
-			workmonthDto.setBiko2(biko2[i]);
+				WorkmonthDto workmonthDto = new WorkmonthDto();
+				workmonthDto.setUserid(userid[i]);
+				workmonthDto.setYear(year[i]);
+				workmonthDto.setMonth(month[i]);
+				workmonthDto.setDay(day[i]);
+				workmonthDto.setStart_h(start_h[i]);
+				workmonthDto.setStart_m(start_m[i]);
+				workmonthDto.setEnd_h(end_h[i]);
+				workmonthDto.setEnd_m(end_m[i]);
+				workmonthDto.setBiko1(biko1[i]);
+				workmonthDto.setBiko2(biko2[i]);
 
-			workmonths_after.add(workmonthDto);
-		}
+				workmonths_after.add(workmonthDto);
+			}
 
 
-		//セッション比較
-		if (workmonths_before !=null && workmonths_before.size()>0) {
-			for (int i = 0; i < workmonths_before.size(); i++) {
-				WorkmonthDto workmonth_before = workmonths_before.get(i);
+			//セッション比較
+			if (workmonths_before !=null && workmonths_before.size()>0) {
+				for (int i = 0; i < workmonths_before.size(); i++) {
+					WorkmonthDto workmonth_before = workmonths_before.get(i);
 
-				for (int j = 0; j < workmonths_after.size(); j++) {
-					WorkmonthDto workmonth_after = workmonths_after.get(j);
+					for (int j = 0; j < workmonths_after.size(); j++) {
+						WorkmonthDto workmonth_after = workmonths_after.get(j);
 
-					if (workmonth_before.toKeyString().equals(workmonth_after.toKeyString())) {
-						if (!workmonth_before.toString().equals(workmonth_after.toString())) {
-							workmonths_u.add(workmonth_after);
+						if (workmonth_before.toKeyString().equals(workmonth_after.toKeyString())) {
+							if (!workmonth_before.toString().equals(workmonth_after.toString())) {
+								workmonths_u.add(workmonth_after);
+							}
 						}
 					}
 				}
 			}
+
+			workmonthService.updateWorkmonthById(workmonths_u);
 		}
-
-		workmonthService.updateWorkmonthById(workmonths_u);
-
 
 		return viewBuilder(form, model, map);
 	}
