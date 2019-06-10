@@ -10,4 +10,6 @@ WEB勤務表「GCP(App Engine Standard)+MySQL+Spring MVC + Mybatis」
 ２．Google Sql Serverをスケジューリング方式で起動
 
 　　1時間で約10円かかるため、1ヶ月Full稼働になった場合、24×30×10=7200円の料金が発生する。
+  
+  　スケジューリング方式で、一日決まっている時間のみ、稼働してほしい。
 　
