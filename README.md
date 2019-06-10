@@ -2,6 +2,7 @@
 WEB勤務表「GCP(App Engine Standard)+MySQL+Spring MVC + Mybatis」
 
 課題：
+
 １．異常(Exception)ページ作成
 
     異常(Exception)が起きた場合、異常ページに遷移、ユーザに通知をお知らせる。
