@@ -8,10 +8,21 @@
         <result column="password" property="password" />
         <result column="countOfWorkInput" property="countOfWorkInput" />
     </resultMap>
-	<select id="getTestAll" resultMap="EmployeeResult">
-		select userid, username, password
-		from users;
+	<select id="getAllEmployee" resultMap="EmployeeResult">
+		SELECT userid, username, password, biko
+		FROM users;
 	</select>
+	<update id="updateEmployeeById">
+		UPDATE users set username = #{username}, biko = #{biko}
+		WHERE userid = #{userid}
+	</update>
+	<insert id="insertEmployee">
+		INSERT INTO  users (userid,username,biko)
+		VALUES (#{userid},#{username},#{biko})
+	</insert>
+	<delete id="deleteEmployeeById">
+		DELETE FROM users WHERE userid = #{userid};
+	</delete>
 	<select id="getUserWorksSatatus" resultMap="EmployeeResult">
 		select userid,
 		       username,

@@ -7,6 +7,7 @@ public class EmployeeDto implements Serializable{
     private String userid;
     private String username;
     private String password;
+    private String biko;
 
     private int countOfWorkInput;
 
@@ -34,5 +35,17 @@ public class EmployeeDto implements Serializable{
 	public void setCountOfWorkInput(int countOfWorkInput) {
 		this.countOfWorkInput = countOfWorkInput;
 	}
+	public String getBiko() {
+		return biko;
+	}
+	public void setBiko(String biko) {
+		this.biko = biko;
+	}
+	@Override
+	public String toString() {
+		return "EmployeeDto [userid=" + userid + ", username=" + username + ", biko=" + biko + "]";
+	}
+
+
 
 }

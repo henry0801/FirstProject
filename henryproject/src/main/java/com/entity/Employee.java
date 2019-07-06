@@ -5,6 +5,7 @@ public class Employee {
     private String userid;
     private String username;
     private String password;
+    private String biko;
 
     private int countOfWorkInput;
 
@@ -32,5 +33,12 @@ public class Employee {
 	public void setCountOfWorkInput(int countOfWorkInput) {
 		this.countOfWorkInput = countOfWorkInput;
 	}
+	public String getBiko() {
+		return biko;
+	}
+	public void setBiko(String biko) {
+		this.biko = biko;
+	}
+
 
 }
