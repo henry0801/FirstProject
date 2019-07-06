@@ -86,6 +86,7 @@ function notshow(object){
 			<td width="100"><input type="text" name="userid_new" size="11" value=""></td>
 			<td><input type="text" name="username_new" size="10" value=""></td>
 			<td><input type="text" name="biko_new" value=""></td>
+
 		</tr>
 	</table>
 </body>
