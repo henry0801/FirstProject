@@ -76,7 +76,6 @@ function notshow(object){
     </div>
     </form:form>
 
-
 	<table>
 		<tr id="foradd" style="display: none">
 			<td align="center">
