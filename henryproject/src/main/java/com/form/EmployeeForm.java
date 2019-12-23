@@ -7,11 +7,15 @@ public class EmployeeForm {
 	private String[] username_exist;
     private String[] biko_exist;
     private String[] delete_flg_exist;
+    private String[] genba_exist;
+    private String[] place_exist;
 
 	private String[] userid_new;
 	private String[] username_new;
     private String[] biko_new;
     private String[] delete_flg_new;
+    private String[] genba_new;
+    private String[] place_new;
 
 	public String[] getUserid_exist() {
 		return userid_exist;
@@ -60,6 +64,30 @@ public class EmployeeForm {
 	}
 	public void setDelete_flg_new(String[] delete_flg_new) {
 		this.delete_flg_new = delete_flg_new;
+	}
+	public String[] getGenba_exist() {
+		return genba_exist;
+	}
+	public void setGenba_exist(String[] genba_exist) {
+		this.genba_exist = genba_exist;
+	}
+	public String[] getGenba_new() {
+		return genba_new;
+	}
+	public void setGenba_new(String[] genba_new) {
+		this.genba_new = genba_new;
+	}
+	public String[] getPlace_exist() {
+		return place_exist;
+	}
+	public void setPlace_exist(String[] place_exist) {
+		this.place_exist = place_exist;
+	}
+	public String[] getPlace_new() {
+		return place_new;
+	}
+	public void setPlace_new(String[] place_new) {
+		this.place_new = place_new;
 	}
 
 

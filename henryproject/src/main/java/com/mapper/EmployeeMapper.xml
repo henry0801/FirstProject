@@ -7,18 +7,21 @@
         <result column="username" property="username" />
         <result column="password" property="password" />
         <result column="countOfWorkInput" property="countOfWorkInput" />
+        <result column="genba" property="genba" />
+        <result column="place" property="place" />
+        <result column="status" property="status" />
     </resultMap>
 	<select id="getAllEmployee" resultMap="EmployeeResult">
-		SELECT userid, username, password, biko
+		SELECT userid, username, password, biko, genba, place
 		FROM users;
 	</select>
 	<update id="updateEmployeeById">
-		UPDATE users set username = #{username}, biko = #{biko}
+		UPDATE users set username = #{username}, biko = #{biko}, genba = #{genba}, place = #{place}
 		WHERE userid = #{userid}
 	</update>
 	<insert id="insertEmployee">
-		INSERT INTO  users (userid,username,biko)
-		VALUES (#{userid},#{username},#{biko})
+		INSERT INTO  users (userid,username,biko,genba,place)
+		VALUES (#{userid},#{username},#{biko},#{genba},#{place})
 	</insert>
 	<delete id="deleteEmployeeById">
 		DELETE FROM users WHERE userid = #{userid};
@@ -28,10 +31,18 @@
 		       username,
 			   password,
 			   (select count(userid) as countofadmin
-		        from workmonth
+		        from workdaily
 		        where userid = users.userid and
-		              year = #{year} and
-		              month = #{month}) as countOfWorkInput
+		              workyear = #{workyear} and
+		              workmonth = #{workmonth}) as countOfWorkInput
 		from users
+	</select>
+	<select id="getUserWorkmonthly" resultMap="EmployeeResult">
+		select a.userid as userid,a.username as username,b.status as status
+		from users as a left join workmonthly as b
+		on a.userid = b.userid
+		and b.workyear = #{workyear}
+		and b.workmonth = #{workmonth}
+		order by userid
 	</select>
 </mapper>

@@ -10,6 +10,7 @@ public class WorkStatusForm {
 	private String name;
     private String memo;
 
+    private String taisyo[];
 
 	public String getWorkYear() {
 		return workYear;
@@ -41,5 +42,12 @@ public class WorkStatusForm {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
+	public String[] getTaisyo() {
+		return taisyo;
+	}
+	public void setTaisyo(String[] taisyo) {
+		this.taisyo = taisyo;
+	}
+
 
 }

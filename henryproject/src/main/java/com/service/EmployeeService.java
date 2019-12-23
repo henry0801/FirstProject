@@ -64,4 +64,10 @@ public class EmployeeService {
         return resultList;
     }
 
+    public List<EmployeeDto> getUserWorkmonthly(String year,String month) {
+        List<Employee> employeeList = employeeMappper.getUserWorkmonthly(year,month);
+        List<EmployeeDto> resultList = convertToDto(employeeList);
+        return resultList;
+    }
+
 }

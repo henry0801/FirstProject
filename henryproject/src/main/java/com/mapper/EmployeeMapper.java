@@ -14,6 +14,8 @@ public interface EmployeeMapper {
 
     void deleteEmployeeById(EmployeeDto eDto);
 
-    List<Employee> getUserWorksSatatus(String year,String month);
+    List<Employee> getUserWorksSatatus(String workyear,String workmonth);
+
+    List<Employee> getUserWorkmonthly(String workyear,String workmonth);
 
 }

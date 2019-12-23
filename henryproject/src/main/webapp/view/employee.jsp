@@ -33,6 +33,7 @@ function notshow(object){
 }
 </script>
 </head>
+<%@ include file="mainPanel.jsp"%>
 <body>
 	<h1>社員一覧</h1>
     <form:form action="/employee" modelAttribute="employeeForm">
@@ -41,7 +42,7 @@ function notshow(object){
 							<td><input type="submit" name="return" value="戻る" /><td>
 						</tr>
 						<tr>
-							<td><input type="submit" name="refresh" value="再表示"/></td>
+							<td><input type="submit" name="refresh" value="刷新"/></td>
 							<td><input type="submit" name="save" value="保存"/></td>
 						</tr>
 					</table><br/>
@@ -54,6 +55,8 @@ function notshow(object){
             	<th></th>
             	<th>ユーザID</th>
                 <th>ユーザ名</th>
+                <th>現場</th>
+                <th>場所</th>
                 <th>備考</th>
                 </tr>
 				<tr>
@@ -64,9 +67,11 @@ function notshow(object){
 								<input type="button" name="delete_exist" value="削除" onclick="notshow(this)"/>
 								<input type="hidden" name="delete_flg_exist" value="0">
 							</td>
-							<td width="100">${employee.userid}</td>
-							<td ><input type="text" name="username_exist" size="10" value="${employee.username}"></td>
-							<td><input type="text" name="biko_exist" value="${employee.biko}"></td>
+							<td width="80">${employee.userid}</td>
+							<td ><input type="text" name="username_exist" size="9" value="${employee.username}"></td>
+							<td><input type="text" name="genba_exist" size="10" value="${employee.genba}"></td>
+							<td><input type="text" name="place_exist" size="10" value="${employee.place}"></td>
+							<td><input type="text" name="biko_exist" size="10" value="${employee.biko}"></td>
 						</tr>
 					</c:forEach>
 				</tr>
@@ -82,9 +87,11 @@ function notshow(object){
 				<input type="button" name="delete_new" value="削除" onclick="notshow(this)"/>
 				<input type="hidden" name="delete_flg_new" value="0">
 			</td>
-			<td width="100"><input type="text" name="userid_new" size="11" value=""></td>
-			<td><input type="text" name="username_new" size="10" value=""></td>
-			<td><input type="text" name="biko_new" value=""></td>
+			<td width="80"><input type="text" name="userid_new" size="9" value=""></td>
+			<td><input type="text" name="username_new" size="9" value=""></td>
+			<td><input type="text" name="genba_new" size="10" value=""></td>
+			<td><input type="text" name="place_new" size="10" value=""></td>
+			<td><input type="text" name="biko_new" size="10" value=""></td>
 
 		</tr>
 	</table>

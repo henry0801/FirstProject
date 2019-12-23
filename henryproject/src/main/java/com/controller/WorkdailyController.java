@@ -4,8 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,24 +11,16 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.TreeMap;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,196 +32,183 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.common.CrunchifyGetPropertyValues;
+import com.common.MapList;
 import com.common.WorkTimeCal;
-import com.dto.WorkmonthDto;
+import com.common.WorkTimePrint;
+import com.dto.EmployeeDto;
+import com.dto.WorkdailyDto;
+import com.dto.WorkmonthlyDto;
 import com.form.WorkStatusForm;
-import com.form.WorkmonthForm;
-import com.service.WorkmonthService;
+import com.form.WorkdailyForm;
+import com.service.EmployeeService;
+import com.service.WorkdailyService;
+import com.service.WorkmonthlyService;
 
 @Controller
 @RequestMapping("/workInput")
-@SessionAttributes({"workmonths", "name", "year", "month"})
-public class WorkmonthController {
+@SessionAttributes({"employeename", "workyear", "workmonth","employeeDtoList","workmonthlyDto"})
+public class WorkdailyController {
 
-	Logger logger = LoggerFactory.getLogger(WorkmonthController.class);
+	Logger logger = LoggerFactory.getLogger(WorkdailyController.class);
+
+	private MapList mapList = new MapList();
 
 	@Autowired
-    private WorkmonthService workmonthService;
+    private EmployeeService employeeService;
+
+	@Autowired
+    private WorkdailyService workdailyService;
+
+	@Autowired
+    private WorkmonthlyService workmonthlyService;
+
+	private WorkTimeCal workTimeCal = new WorkTimeCal();
+
+	private WorkTimePrint workTimePrint = new WorkTimePrint();
 
 	//他の画面でリンク経由
 	@RequestMapping(value = "link", method = RequestMethod.GET)
-	public String link(HttpServletRequest request, WorkmonthForm workmonthForm, Model model, ModelMap map) {
+	public String link(HttpServletRequest request, WorkdailyForm workdailyForm, Model model, ModelMap map) {
 
-		String id = request.getParameter("id");
-		String name = request.getParameter("name");
-		workmonthForm.setId(id);
+		String userid = request.getParameter("userid");
+		String employeename = request.getParameter("employeename");
+		workdailyForm.setUserid(userid);
 
-		map.put("name", name);
-		return viewBuilder(workmonthForm, model, map);
+		map.put("employeename", employeename);
+		return viewBuilder(workdailyForm, model, map);
 	}
 
 	//初期表示
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String show(@ModelAttribute Model model,ModelMap map) {
 
-        return viewBuilder(new WorkmonthForm(), model, map);
+        return viewBuilder(new WorkdailyForm(), model, map);
     }
 
     //戻るボタン
     @RequestMapping(value = "", params = "return", method = RequestMethod.POST)
     public String toMenu(@ModelAttribute WorkStatusForm workStatusForm, Model model,ModelMap map) {
-        String year = (String) map.get("year");
-        String month = (String) map.get("month");
+        String workyear = (String) map.get("workyear");
+        String workmonth = (String) map.get("workmonth");
 
-        workStatusForm.setWorkYear(year);
-        workStatusForm.setWorkMonth(month);
+        workStatusForm.setWorkYear(workyear);
+        workStatusForm.setWorkMonth(workmonth);
+
+        List<EmployeeDto> employeeDtoList = employeeService.getUserWorkmonthly(workyear,workmonth);
+        model.addAttribute("employeeDtoList", employeeDtoList);
 
     	return "workStatus";
     }
 
     //検索ボタン
 	@RequestMapping(value = "", params = "serach", method = RequestMethod.POST)
-	public String viewBuilder(@ModelAttribute WorkmonthForm workmonthForm, Model model,ModelMap map) {
+	public String viewBuilder(@ModelAttribute WorkdailyForm workdailyForm, Model model,ModelMap map) {
 
-
-
-		String workYear = workmonthForm.getWorkYear();
-		String workMonth =workmonthForm.getWorkMonth();
-		if (workYear == null || workMonth == null) {
-			workYear = (String) map.get("year");
-	        workMonth = (String) map.get("month");
-	        workmonthForm.setWorkYear(workYear);
-	    	workmonthForm.setWorkMonth(workMonth);
+		String userid = workdailyForm.getUserid();
+		String workyear = workdailyForm.getWorkYear();
+		String workmonth =workdailyForm.getWorkMonth();
+		if (workyear == null || workmonth == null) {
+			workyear = (String) map.get("workyear");
+	        workmonth = (String) map.get("workmonth");
+	        workdailyForm.setWorkYear(workyear);
+	    	workdailyForm.setWorkMonth(workmonth);
 		}
 
-		String id = workmonthForm.getId();
+		WorkmonthlyDto workmonthlyDto = workmonthlyService.getWorkmonthlyById(userid, workyear, workmonth);
+		List<WorkdailyDto> workdailyDtoList = workdailyService.getWorkdailyById(userid,workyear,workmonth);
 
-		List<WorkmonthDto> workmonths = workmonthService.getWorkmonthById(id,workYear,workMonth);
+		if (workdailyDtoList!=null && workdailyDtoList.size()>0) {
 
-		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+			String[] start_h = new String[workdailyDtoList.size()];
+			String[] start_m = new String[workdailyDtoList.size()];
+			String[] end_h = new String[workdailyDtoList.size()];
+			String[] end_m = new String[workdailyDtoList.size()];
 
-
-		if (workmonths!=null && workmonths.size()>0) {
-
-			String[] start_h = new String[workmonths.size()];
-			String[] start_m = new String[workmonths.size()];
-			String[] end_h = new String[workmonths.size()];
-			String[] end_m = new String[workmonths.size()];
-
-			double totalworkHours = 0.00;
-			double addOverHours = 0.00;
-
-			for (int i = 0; i < workmonths.size(); i++) {
-				WorkmonthDto dto = workmonths.get(i);
-				String dateStr = dto.getYear()+dto.getMonth()+dto.getDay();
+			for (int i = 0; i < workdailyDtoList.size(); i++) {
+				WorkdailyDto workdailyDto = workdailyDtoList.get(i);
+				String dateStr = workdailyDto.getWorkyear()+workdailyDto.getWorkmonth()+workdailyDto.getWorkday();
 
 				try {
+					SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
 					Date date = fmt.parse(dateStr);
-					dto.setDate(date);
+					workdailyDto.setDate(date);
 
 				} catch (ParseException e) {
 					logger.debug("ParseException: "+e.getMessage());
 				}
 
-				start_h[i] = dto.getStart_h();
-				start_m[i] = dto.getStart_m();
-				end_h[i] = dto.getEnd_h();
-				end_m[i] = dto.getEnd_m();
-
-
-				//工数計算
-				WorkTimeCal workTimeCal = new WorkTimeCal();
-				double workHours = workTimeCal.calWorkTime(dto.getStart_h()+":"+dto.getStart_m(), dto.getEnd_h()+":"+dto.getEnd_m());
-				double overHours = workTimeCal.calOverTime(dto.getStart_h()+":"+dto.getStart_m(), dto.getEnd_h()+":"+dto.getEnd_m());
-
-				dto.setWorkHours(String.format("%.2f", workHours));
-				dto.setOverHours(String.format("%.2f", overHours));
-
-				addOverHours = addOverHours + overHours;
-				totalworkHours = totalworkHours + workHours;
-				dto.setAddOverHours(String.format("%.2f", addOverHours));
+				start_h[i] = workdailyDto.getStart_h();
+				start_m[i] = workdailyDto.getStart_m();
+				end_h[i] = workdailyDto.getEnd_h();
+				end_m[i] = workdailyDto.getEnd_m();
 			}
 
-			workmonthForm.setStart_h(start_h);
-			workmonthForm.setStart_m(start_m);
-			workmonthForm.setEnd_h(end_h);
-			workmonthForm.setEnd_m(end_m);
+			workdailyForm.setStart_harry(start_h);
+			workdailyForm.setStart_marry(start_m);
+			workdailyForm.setEnd_harry(end_h);
+			workdailyForm.setEnd_marry(end_m);
 
-			workmonthForm.setTotalWorkHours(String.format("%.2f", totalworkHours));
-			workmonthForm.setTotalOverHours(String.format("%.2f", addOverHours));
 		}
 
+		if (workmonthlyDto==null) {
+			workmonthlyDto = new WorkmonthlyDto();
+		}else {
+			workmonthlyDto.setWorkdailyDtoList(workdailyDtoList);
+		}
 
-		map.put("year", workYear);
-		map.put("month", workMonth);
-		map.put("workmonths", workmonths);
+		map.put("workyear", workyear);
+		map.put("workmonth", workmonth);
+		map.put("workmonthlyDto", workmonthlyDto);
 
-        model.addAttribute(workmonthForm);
-        model.addAttribute("name",map.get("name"));
-        model.addAttribute("workmonths", workmonths);
+        model.addAttribute(workdailyForm);
+        model.addAttribute("employeename",map.get("employeename"));
+        model.addAttribute("workmonthlyDto", workmonthlyDto);
 
-		return "workmonth";
+		return "workdaily";
 	}
 
 	//保存ボタン
 	@RequestMapping(value = "", params = "save", method = RequestMethod.POST)
-	public String save(@ModelAttribute WorkmonthForm form, Model model,ModelMap map) {
+	public String save(@ModelAttribute WorkdailyForm form, Model model,ModelMap map) {
 
-		List<WorkmonthDto> workmonths_before = (List<WorkmonthDto>) map.get("workmonths");
+		//セッションから取得
+		WorkmonthlyDto workmonthlyDto = (WorkmonthlyDto) map.get("workmonthlyDto");
+		List<WorkdailyDto> workdailDtoList_after = new ArrayList<>();
 
-		List<WorkmonthDto> workmonths_after = new ArrayList<>();
-
-		List<WorkmonthDto> workmonths_u= new ArrayList<>();
-
-		String[] userid = form.getUserid();
-		String[] start_h = form.getStart_h();
-		String[] start_m = form.getStart_m();
-		String[] end_h = form.getEnd_h();
-		String[] end_m = form.getEnd_m();
-		String[] year = form.getYear();
-		String[] month = form.getMonth();
-		String[] day = form.getDay();
-		String[] biko1 = form.getBiko1();
-		String[] biko2 = form.getBiko2();
+		String[] userid = form.getUseridarry();
+		String[] start_h = form.getStart_harry();
+		String[] start_m = form.getStart_marry();
+		String[] end_h = form.getEnd_harry();
+		String[] end_m = form.getEnd_marry();
+		String[] workyear = form.getWorkyeararry();
+		String[] workmonth = form.getWorkmontharry();
+		String[] day = form.getWorkdayarry();
+		String[] biko1 = form.getBiko1arry();
+		String[] biko2 = form.getBiko2arry();
 
 		if (userid!=null) {
 			for (int i = 0; i < userid.length; i++) {
 
-				WorkmonthDto workmonthDto = new WorkmonthDto();
-				workmonthDto.setUserid(userid[i]);
-				workmonthDto.setYear(year[i]);
-				workmonthDto.setMonth(month[i]);
-				workmonthDto.setDay(day[i]);
-				workmonthDto.setStart_h(start_h[i]);
-				workmonthDto.setStart_m(start_m[i]);
-				workmonthDto.setEnd_h(end_h[i]);
-				workmonthDto.setEnd_m(end_m[i]);
-				workmonthDto.setBiko1(biko1[i]);
-				workmonthDto.setBiko2(biko2[i]);
+				WorkdailyDto workdailDto = new WorkdailyDto();
+				workdailDto.setUserid(userid[i]);
+				workdailDto.setWorkyear(workyear[i]);
+				workdailDto.setWorkmonth(workmonth[i]);
+				workdailDto.setWorkday(day[i]);
+				workdailDto.setStart_h(start_h[i]);
+				workdailDto.setStart_m(start_m[i]);
+				workdailDto.setEnd_h(end_h[i]);
+				workdailDto.setEnd_m(end_m[i]);
+				workdailDto.setBiko1(biko1[i]);
+				workdailDto.setBiko2(biko2[i]);
 
-				workmonths_after.add(workmonthDto);
+				workdailDtoList_after.add(workdailDto);
 			}
+			workmonthlyDto.setWorkdailyDtoList(workdailDtoList_after);
 
+			//工数計算
+			workTimeCal.calWorkmonthData(workmonthlyDto);
 
-			//セッション比較
-			if (workmonths_before !=null && workmonths_before.size()>0) {
-				for (int i = 0; i < workmonths_before.size(); i++) {
-					WorkmonthDto workmonth_before = workmonths_before.get(i);
-
-					for (int j = 0; j < workmonths_after.size(); j++) {
-						WorkmonthDto workmonth_after = workmonths_after.get(j);
-
-						if (workmonth_before.toKeyString().equals(workmonth_after.toKeyString())) {
-							if (!workmonth_before.toString().equals(workmonth_after.toString())) {
-								workmonths_u.add(workmonth_after);
-							}
-						}
-					}
-				}
-			}
-
-			workmonthService.updateWorkmonthById(workmonths_u);
+			workmonthlyService.updateWorkMonthDayById(workmonthlyDto);
 		}
 
 		return viewBuilder(form, model, map);
@@ -239,119 +216,56 @@ public class WorkmonthController {
 
 	//新規作成ボタン
 	@RequestMapping(value = "", params = "recreate", method = RequestMethod.POST)
-	public String recreate(@ModelAttribute WorkmonthForm workmonthForm, Model model,ModelMap map) {
+	public String recreate(@ModelAttribute WorkdailyForm workdailyForm, Model model,ModelMap map) {
 
-		String workYear = workmonthForm.getWorkYear();
-		String workMonth =workmonthForm.getWorkMonth();
-		if (workYear == null || workMonth == null) {
-			workYear = (String) map.get("year");
-	        workMonth = (String) map.get("month");
-	        workmonthForm.setWorkYear(workYear);
-	    	workmonthForm.setWorkMonth(workMonth);
+		//キー取得
+		String userid = workdailyForm.getUserid();
+		String workyear = workdailyForm.getWorkYear();
+		String workmonth =workdailyForm.getWorkMonth();
+		if (workyear == null || workmonth == null) {
+			workyear = (String) map.get("workyear");
+	        workmonth = (String) map.get("workmonth");
+	        workdailyForm.setWorkYear(workyear);
+	    	workdailyForm.setWorkMonth(workmonth);
 		}
 
-		String id = workmonthForm.getId();
+		//新規WorkdailyDtoリスト作成
+		List<WorkdailyDto> workdailyDtoList_New = workTimeCal.setNewWorkmonthData(userid, workyear, workmonth);
 
-		List<WorkmonthDto> workmonths = (List<WorkmonthDto>) map.get("workmonths");
+		//新規WorkmonthlyDto作成
+		WorkmonthlyDto workmonthlyDto_New = new WorkmonthlyDto();
+		workmonthlyDto_New.setUserid(userid);
+		workmonthlyDto_New.setWorkyear(workyear);
+		workmonthlyDto_New.setWorkmonth(workmonth);
+		workmonthlyDto_New.setStatus("1");
+		workmonthlyDto_New.setWorkdailyDtoList(workdailyDtoList_New);
 
-		if (workmonths == null) {
-			workmonths = workmonthService.getWorkmonthById(id,workYear,workMonth);
-		}
+		//工数計算
+		workTimeCal.calWorkmonthData(workmonthlyDto_New);
 
-		//既存のデータがあれば、削除する
-		if (workmonths != null && workmonths.size()>0) {
-			workmonthService.deleteWorkmonthById(id,workYear,workMonth);
-		}
+		//新規データ作成
+		workmonthlyService.makeNewWorkMonthDayById(workmonthlyDto_New);
 
-		int year = Integer.parseInt(workYear);
-	    int month = Integer.parseInt(workMonth);
-	    int day = 1;
-
-		Calendar cal = Calendar.getInstance();
-		cal.set(year, month-1, 1);
-
-		List<WorkmonthDto> workmonths_new = new ArrayList<>();
-
-		//Holidayリソース取得
-		Properties holidayProperties = null;
-		try {
-			holidayProperties = new CrunchifyGetPropertyValues().getPropValue();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			logger.debug("IOException: "+e1.getMessage());
-		}
-
-		int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-
-		logger.debug("lastday:"+String.valueOf(lastDay));
-
-		for (int i = 0; i < lastDay; i++) {
-			WorkmonthDto workmonthDto = new WorkmonthDto();
-			workmonthDto.setUserid(id);
-
-			String yearStr = String.valueOf(year);
-			String monthStr = String.format("%02d", month);
-			String dayStr = String.format("%02d", day);
-
-			String dateStr = yearStr+monthStr+dayStr;
-
-			workmonthDto.setYear(yearStr);
-			workmonthDto.setMonth(monthStr);
-			workmonthDto.setDay(dayStr);
-
-			String biko1 = "";
-			String biko2 = "";
-
-			boolean holidayFlg = holidayProperties != null &&  holidayProperties.get(dateStr)!=null;
-			boolean weekendFlg = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
-			workmonthDto.setWeekendflg(String.valueOf(weekendFlg ? 1 : 0));
-			workmonthDto.setHolidayflg(String.valueOf(holidayFlg ? 1 : 0));
-
-			//出勤時間設定
-			if(holidayFlg || weekendFlg){
-				workmonthDto.setStart_h("");
-				workmonthDto.setStart_m("");
-				workmonthDto.setEnd_h("");
-				workmonthDto.setEnd_m("");
-			}else {
-				workmonthDto.setStart_h("09");
-				workmonthDto.setStart_m("00");
-				workmonthDto.setEnd_h("18");
-				workmonthDto.setEnd_m("00");
-			}
-
-			if (holidayFlg) {
-				biko2 = holidayProperties.get(dateStr).toString();
-			}
-
-			workmonthDto.setBiko1(biko1);
-			workmonthDto.setBiko2(biko2);
-
-			workmonths_new.add(workmonthDto);
-
-			day++;
-			cal.add(Calendar.DATE, 1);
-		}
-
-		workmonthService.insertWorkmonthById(workmonths_new);
-
-		return viewBuilder(workmonthForm, model, map);
+		return viewBuilder(workdailyForm, model, map);
 	}
 
 	//印刷ボタン
     @RequestMapping(value = "", params = "print", method = RequestMethod.POST)
-    public String print(HttpServletResponse response,WorkmonthForm workmonthForm, Model model,ModelMap map) throws IOException {
+    public String print(HttpServletResponse response,WorkdailyForm workdailyForm, Model model,ModelMap map) throws IOException {
 
     	response.reset();
 		response.setContentType("application/vnd.ms-excel;charset=utf-8");
 
+    	//セッションから取得
+    	WorkmonthlyDto workmonthlyDto = (WorkmonthlyDto) map.get("workmonthlyDto");
 
-		String year = (String) map.get("year");
-        String month = (String) map.get("month");
+		String workyear = (String) map.get("workyear");
+        String workmonth = (String) map.get("workmonth");
+        String username = (String)map.get("employeename");
 
-		String sheetNm = "協力会社社員勤休表";
-		String outputfileNm = year+"-"+month+"勤务表";
-		month = String.valueOf(Integer.valueOf(month));
+        workmonthlyDto.setUsername(username);
+		String outputfileNm = workyear+"-"+workmonth+"勤务表";
+		workmonth = String.valueOf(Integer.valueOf(workmonth));
 
 		Workbook workbook = null;
 		BufferedInputStream bufferedInputStream = null;
@@ -359,63 +273,7 @@ public class WorkmonthController {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 
 		try {
-			String filePath = Thread.currentThread().getContextClassLoader().getResource("work.xls").getFile();
-
-//			String filePath = getClass().getResource("/work.xls").getPath();
-//			filePath = filePath.substring(1);
-			FileInputStream fileInputStream = new FileInputStream(new File(filePath));
-
-			workbook = WorkbookFactory.create(fileInputStream);
-			Sheet sheet = workbook.getSheet(sheetNm);
-
-
-			List<WorkmonthDto> workmonths = (List<WorkmonthDto>) map.get("workmonths");
-			if (workmonths !=null && workmonths.size()>0) {
-				for (int i = 0; i < workmonths.size(); i++) {
-					WorkmonthDto workmonth = workmonths.get(i);
-
-					Cell cell_start = sheet.getRow(4+i).getCell(2);
-					Cell cell_end = sheet.getRow(4+i).getCell(3);
-
-					Cell cell_workHours = sheet.getRow(4+i).getCell(4);
-					Cell cell_overHours = sheet.getRow(4+i).getCell(5);
-					Cell cell_addOverHours = sheet.getRow(4+i).getCell(6);
-
-					Cell cell_biko1 = sheet.getRow(4+i).getCell(7);
-					Cell cell_biko2 = sheet.getRow(4+i).getCell(8);
-
-					String start = workmonth.getStart_h()+":"+workmonth.getStart_m();
-					String end = workmonth.getEnd_h()+":"+workmonth.getEnd_m();
-
-					if (!":".equals(start)) {
-						double time = DateUtil.convertTime(start);
-						cell_start.setCellValue(time);
-					}
-
-					if (!":".equals(end)) {
-						double time = DateUtil.convertTime(end);
-						cell_end.setCellValue(time);
-					}
-
-					cell_workHours.setCellValue(workmonth.getWorkHours());
-					cell_overHours.setCellValue(workmonth.getOverHours());
-					cell_addOverHours.setCellValue(workmonth.getAddOverHours());
-					cell_biko1.setCellValue(workmonth.getBiko1());
-					cell_biko2.setCellValue(workmonth.getBiko2());
-
-
-				}
-
-				sheet.getRow(1).getCell(0).setCellValue(year+"年");
-				sheet.getRow(1).getCell(2).setCellValue(month+"月");
-				sheet.getRow(3).getCell(0).setCellValue(month+"月");
-				sheet.getRow(2).getCell(7).setCellValue("作業者氏名　："+map.get("name"));
-
-				sheet.getRow(35).getCell(4).setCellValue(workmonthForm.getTotalWorkHours());
-				sheet.getRow(35).getCell(8).setCellValue(workmonthForm.getTotalOverHours());
-			}
-
-
+			workbook = workTimePrint.print(workmonthlyDto);
 
 			workbook.write(os);
 			byte[] content = os.toByteArray();
@@ -438,8 +296,6 @@ public class WorkmonthController {
 			logger.info(e.getMessage());
 		} catch (EncryptedDocumentException e) {
 			logger.info(e.getMessage());
-		} catch (InvalidFormatException e) {
-			logger.info(e.getMessage());
 		} catch (IOException e) {
 			logger.info(e.getMessage());
 		} finally {
@@ -451,52 +307,25 @@ public class WorkmonthController {
 
 		return null;
 	}
+    @ModelAttribute("yearList")
+	public Map<String, String> getYearList() {
+		return mapList.getYearList();
+	}
 
+	@ModelAttribute("monthList")
+	public Map<String, String> getMonthList() {
+		return mapList.getMonthList();
+	}
 
 	@ModelAttribute("hourList")
 	public Map<String, String> getHourList() {
-		Map<String, String> hourList = new TreeMap<String, String>();
-		hourList.put("", "");
-		hourList.put("00", "00");
-		hourList.put("01", "01");
-		hourList.put("02", "02");
-		hourList.put("03", "03");
-		hourList.put("04", "04");
-		hourList.put("05", "05");
-		hourList.put("06", "06");
-		hourList.put("07", "07");
-		hourList.put("08", "08");
-		hourList.put("09", "09");
-		hourList.put("10", "10");
-		hourList.put("11", "11");
-		hourList.put("12", "12");
-		hourList.put("13", "13");
-		hourList.put("14", "14");
-		hourList.put("15", "15");
-		hourList.put("16", "16");
-		hourList.put("17", "17");
-		hourList.put("18", "18");
-		hourList.put("19", "19");
-		hourList.put("21", "21");
-		hourList.put("22", "22");
-		hourList.put("23", "23");
-		hourList.put("24", "24");
-		return hourList;
+		return mapList.getHourList();
 	}
 
 	@ModelAttribute("miniteList")
 	public Map<String, String> getMiniteList() {
-		Map<String, String> miniteList = new TreeMap<String, String>();
-		miniteList.put("", "");
-		miniteList.put("00", "00");
-		miniteList.put("15", "15");
-		miniteList.put("30", "30");
-		miniteList.put("45", "45");
-
-		return miniteList;
+		return mapList.getMiniteList();
 	}
-
-
 
 
 }

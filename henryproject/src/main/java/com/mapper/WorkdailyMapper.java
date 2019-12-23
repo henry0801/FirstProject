@@ -2,17 +2,17 @@ package com.mapper;
 
 import java.util.List;
 
-import com.dto.WorkmonthDto;
-import com.entity.Workmonth;
+import com.dto.WorkdailyDto;
+import com.entity.Workdaily;
 
-public interface WorkmonthMapper {
+public interface WorkdailyMapper {
 
-    List<Workmonth> getWorkmonthById(String userid,String year,String month);
+    List<Workdaily> getWorkdailyById(String userid,String workyear,String workmonth);
 
-    void updateWorkmonthById(WorkmonthDto sDto);
+    void updateWorkdailyById(WorkdailyDto workdailyDto);
 
-    void insertWorkmonthById(WorkmonthDto sDto);
+    void insertWorkdailyById(WorkdailyDto workdailyDto);
 
-    void deleteWorkmonthById(String userid,String year,String month);
+    void deleteWorkdailyById(String userid,String workyear,String workmonth);
 
 }

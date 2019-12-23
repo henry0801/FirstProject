@@ -9,51 +9,51 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dto.WorkmonthDto;
-import com.entity.Workmonth;
-import com.mapper.WorkmonthMapper;
+import com.dto.WorkdailyDto;
+import com.entity.Workdaily;
+import com.mapper.WorkdailyMapper;
 
 @Service
-public class WorkmonthService {
+public class WorkdailyService {
 
-	Logger logger = LoggerFactory.getLogger(WorkmonthService.class);
+	Logger logger = LoggerFactory.getLogger(WorkdailyService.class);
 
     @Autowired
-    private WorkmonthMapper workmonthMapper;
+    private WorkdailyMapper workdailyMapper;
 
-    private List<WorkmonthDto> convertToDto(List<Workmonth> WorkmonthList) {
-        List<WorkmonthDto> resultList = new LinkedList<WorkmonthDto>();
-        for (Workmonth entity : WorkmonthList) {
-        	WorkmonthDto dto = new WorkmonthDto();
+    private List<WorkdailyDto> workdailyConvertToDto(List<Workdaily> WorkdailyList) {
+        List<WorkdailyDto> resultList = new LinkedList<WorkdailyDto>();
+        for (Workdaily entity : WorkdailyList) {
+        	WorkdailyDto dto = new WorkdailyDto();
             BeanUtils.copyProperties(entity, dto);
             resultList.add(dto);
         }
         return resultList;
     }
 
-    public List<WorkmonthDto> getWorkmonthById(String userid,String year,String month) {
-        List<Workmonth> WorkmonthList = workmonthMapper.getWorkmonthById(userid,year,month);
-        List<WorkmonthDto> resultList = convertToDto(WorkmonthList);
-        logger.info("Serach The Workmonth Over!");
+    public List<WorkdailyDto> getWorkdailyById(String userid,String year,String month) {
+        List<Workdaily> WorkdailyList = workdailyMapper.getWorkdailyById(userid,year,month);
+        List<WorkdailyDto> resultList = workdailyConvertToDto(WorkdailyList);
+        logger.info("Serach The Workdaily Over!");
         return resultList;
     }
 
-    public void updateWorkmonthById(List<WorkmonthDto> workmonths) {
-    	for (WorkmonthDto dto : workmonths) {
-    		workmonthMapper.updateWorkmonthById(dto);
-    		logger.info("Update The Workmonth Over!");
+    public void updateWorkdailyById(List<WorkdailyDto> workdailyDtoList) {
+    	for (WorkdailyDto dto : workdailyDtoList) {
+    		workdailyMapper.updateWorkdailyById(dto);
         }
+    	logger.info("Update The Workdaily Over!");
     }
 
-    public void insertWorkmonthById(List<WorkmonthDto> workmonths) {
-    	for (WorkmonthDto dto : workmonths) {
-    		workmonthMapper.insertWorkmonthById(dto);
-    		logger.info("INSERT The Workmonth Over!");
+    public void insertWorkdailyById(List<WorkdailyDto> workdailyDtoList) {
+    	for (WorkdailyDto dto : workdailyDtoList) {
+    		workdailyMapper.insertWorkdailyById(dto);
         }
+    	logger.info("INSERT The Workdaily Over!");
     }
 
-    public void deleteWorkmonthById(String userid, String year, String month) {
-    	workmonthMapper.deleteWorkmonthById(userid, year, month);
-    	logger.info("DELETE The Workmonth Over!");
+    public void deleteWorkdailyById(String userid, String workyear, String workmonth) {
+    	workdailyMapper.deleteWorkdailyById(userid, workyear, workmonth);
+    	logger.info("DELETE The Workdaily Over!");
     }
 }

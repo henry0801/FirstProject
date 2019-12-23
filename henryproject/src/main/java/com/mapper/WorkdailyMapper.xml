@@ -1,47 +1,107 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mapper.WorkmonthMapper">
-    <resultMap id="WorkmonthResult" type="com.entity.Workmonth">
+<mapper namespace="com.mapper.WorkdailyMapper">
+    <resultMap id="WorkdailyResult" type="com.entity.Workdaily">
         <result column="userid" property="userid" />
-        <result column="year" property="year" />
-        <result column="month" property="month" />
-        <result column="day" property="day" />
+        <result column="workyear" property="workyear" />
+        <result column="workmonth" property="workmonth" />
+        <result column="workday" property="workday" />
         <result column="start_h" property="start_h" />
         <result column="start_m" property="start_m" />
         <result column="end_h" property="end_h" />
         <result column="end_m" property="end_m" />
         <result column="biko1" property="biko1" />
         <result column="biko2" property="biko2" />
-        <result column="weekendflg" property="weekendflg" />
-        <result column="holidayflg" property="holidayflg" />
+        <result column="weekendflag" property="weekendflag" />
+        <result column="holidayflag" property="holidayflag" />
+        <result column="workhoursday" property="workhoursday" />
+        <result column="overhoursday" property="overhoursday" />
+        <result column="addoverhoursday" property="addoverhoursday" />
         <result column="creation_time" property="creation_time" />
         <result column="modification_time" property="modification_time" />
     </resultMap>
-	<select id="getWorkmonthById" resultMap="WorkmonthResult">
-	SELECT userid, year, month, day, start_h, start_m, end_h, end_m, biko1, biko2, creation_time, modification_time,weekendflg,holidayflg
-	FROM workmonth
+	<select id="getWorkdailyById" resultMap="WorkdailyResult">
+	SELECT userid,
+	       workyear,
+	       workmonth,
+	       workday,
+	       start_h,
+	       start_m,
+	       end_h,
+	       end_m,
+	       biko1,
+	       biko2,
+	       creation_time,
+	       modification_time,
+	       weekendflag,
+	       holidayflag,
+	       workhoursday,
+	       overhoursday,
+	       addoverhoursday
+	FROM workdaily
 	WHERE userid = #{userid}
-	AND year = #{year}
-	AND month = #{month}
+	AND workyear = #{workyear}
+	AND workmonth = #{workmonth}
 	ORDER BY userid ASC;
 	</select>
-	<update id="updateWorkmonthById">
-	UPDATE workmonth set start_h = #{start_h}, start_m = #{start_m}, end_h = #{end_h}, end_m = #{end_m}, biko1 = #{biko1}, biko2 = #{biko2}
+	<update id="updateWorkdailyById">
+	UPDATE workdaily set
+	                 start_h = #{start_h},
+	                 start_m = #{start_m},
+	                 end_h = #{end_h},
+	                 end_m = #{end_m},
+	                 workhoursday = #{workhoursday},
+	                 overhoursday = #{overhoursday},
+	                 addoverhoursday = #{addoverhoursday},
+	                 biko1 = #{biko1},
+	                 biko2 = #{biko2}
 	WHERE userid = #{userid}
-	AND year = #{year}
-	AND month = #{month}
-	AND day = #{day}
+	AND workyear = #{workyear}
+	AND workmonth = #{workmonth}
+	AND workday = #{workday}
 	</update>
-	<insert id="insertWorkmonthById">
-	INSERT INTO  workmonth (userid, year, month, day, start_h, start_m, end_h, end_m, biko1, biko2,weekendflg,holidayflg)
-	VALUES (#{userid},#{year},#{month},#{day},#{start_h},#{start_m},#{end_h},#{end_m},#{biko1},#{biko2},#{weekendflg},#{holidayflg})
+	<insert id="insertWorkdailyById">
+	INSERT INTO  workdaily (
+	                       userid,
+	                       workyear,
+	                       workmonth,
+	                       workday,
+	                       start_h,
+	                       start_m,
+	                       end_h,
+	                       end_m,
+	                       biko1,
+	                       biko2,
+	                       weekendflag,
+	                       holidayflag,
+	                       workhoursday,
+	                       overhoursday,
+	                       addoverhoursday
+	                       )
+	VALUES (
+	        #{userid},
+	        #{workyear},
+	        #{workmonth},
+	        #{workday},
+	        #{start_h},
+	        #{start_m},
+	        #{end_h},
+	        #{end_m},
+	        #{biko1},
+	        #{biko2},
+	        #{weekendflag},
+	        #{holidayflag},
+	        #{workhoursday},
+	        #{overhoursday},
+	        #{addoverhoursday}
+	        )
 	</insert>
-	<delete id="deleteWorkmonthById">
+	<delete id="deleteWorkdailyById">
 	DELETE
-	FROM workmonth
+	FROM workdaily
 	WHERE userid = #{userid}
-	AND year = #{year}
-	AND month = #{month}
+	AND workyear = #{workyear}
+	AND workmonth = #{workmonth}
 	</delete>
 </mapper>

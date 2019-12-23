@@ -1,26 +1,25 @@
 package com.form;
 
-public class WorkmonthForm {
+public class WorkdailyForm {
 
 	private String workYear;
 	private String workMonth;
 
-	private String id;
+	private String userid;
 
-	private String[] userid;
-	private String[] year;
-    private String[] month;
-    private String[] day;
-    private String[] start_h;
-    private String[] start_m;
-    private String[] end_h;
-    private String[] end_m;
-    private String[] biko1;
-    private String[] biko2;
+	private String[] useridarry;
+	private String[] workyeararry;
+    private String[] workmontharry;
+    private String[] workdayarry;
+    private String[] start_harry;
+    private String[] start_marry;
+    private String[] end_harry;
+    private String[] end_marry;
+    private String[] biko1arry;
+    private String[] biko2arry;
 
     private String totalWorkHours;
     private String totalOverHours;
-
 	public String getWorkYear() {
 		return workYear;
 	}
@@ -33,71 +32,71 @@ public class WorkmonthForm {
 	public void setWorkMonth(String workMonth) {
 		this.workMonth = workMonth;
 	}
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public String[] getUserid() {
+	public String getUserid() {
 		return userid;
 	}
-	public void setUserid(String[] userid) {
+	public void setUserid(String userid) {
 		this.userid = userid;
 	}
-	public String[] getYear() {
-		return year;
+	public String[] getUseridarry() {
+		return useridarry;
 	}
-	public void setYear(String[] year) {
-		this.year = year;
+	public void setUseridarry(String[] useridarry) {
+		this.useridarry = useridarry;
 	}
-	public String[] getMonth() {
-		return month;
+	public String[] getWorkyeararry() {
+		return workyeararry;
 	}
-	public void setMonth(String[] month) {
-		this.month = month;
+	public void setWorkyeararry(String[] workyeararry) {
+		this.workyeararry = workyeararry;
 	}
-	public String[] getDay() {
-		return day;
+	public String[] getWorkmontharry() {
+		return workmontharry;
 	}
-	public void setDay(String[] day) {
-		this.day = day;
+	public void setWorkmontharry(String[] workmontharry) {
+		this.workmontharry = workmontharry;
 	}
-	public String[] getStart_h() {
-		return start_h;
+	public String[] getWorkdayarry() {
+		return workdayarry;
 	}
-	public void setStart_h(String[] start_h) {
-		this.start_h = start_h;
+	public void setWorkdayarry(String[] workdayarry) {
+		this.workdayarry = workdayarry;
 	}
-	public String[] getStart_m() {
-		return start_m;
+	public String[] getStart_harry() {
+		return start_harry;
 	}
-	public void setStart_m(String[] start_m) {
-		this.start_m = start_m;
+	public void setStart_harry(String[] start_harry) {
+		this.start_harry = start_harry;
 	}
-	public String[] getEnd_h() {
-		return end_h;
+	public String[] getStart_marry() {
+		return start_marry;
 	}
-	public void setEnd_h(String[] end_h) {
-		this.end_h = end_h;
+	public void setStart_marry(String[] start_marry) {
+		this.start_marry = start_marry;
 	}
-	public String[] getEnd_m() {
-		return end_m;
+	public String[] getEnd_harry() {
+		return end_harry;
 	}
-	public void setEnd_m(String[] end_m) {
-		this.end_m = end_m;
+	public void setEnd_harry(String[] end_harry) {
+		this.end_harry = end_harry;
 	}
-	public String[] getBiko1() {
-		return biko1;
+	public String[] getEnd_marry() {
+		return end_marry;
 	}
-	public void setBiko1(String[] biko1) {
-		this.biko1 = biko1;
+	public void setEnd_marry(String[] end_marry) {
+		this.end_marry = end_marry;
 	}
-	public String[] getBiko2() {
-		return biko2;
+	public String[] getBiko1arry() {
+		return biko1arry;
 	}
-	public void setBiko2(String[] biko2) {
-		this.biko2 = biko2;
+	public void setBiko1arry(String[] biko1arry) {
+		this.biko1arry = biko1arry;
+	}
+	public String[] getBiko2arry() {
+		return biko2arry;
+	}
+	public void setBiko2arry(String[] biko2arry) {
+		this.biko2arry = biko2arry;
 	}
 	public String getTotalWorkHours() {
 		return totalWorkHours;
@@ -111,4 +110,6 @@ public class WorkmonthForm {
 	public void setTotalOverHours(String totalOverHours) {
 		this.totalOverHours = totalOverHours;
 	}
+
+
 }

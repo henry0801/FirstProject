@@ -1,14 +1,15 @@
 package com.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
-public class Workmonth {
+public class Workdaily {
 
 
 	private String userid;
-	private String year;
-    private String month;
-    private String day;
+	private String workyear;
+    private String workmonth;
+    private String workday;
     private String start_h;
     private String start_m;
     private String end_h;
@@ -17,31 +18,32 @@ public class Workmonth {
     private String biko2;
     private Date creation_time;
     private Date modification_time;
-    private String weekendflg;
-    private String holidayflg;
+    private String weekendflag;
+    private String holidayflag;
+    private BigDecimal workhoursday;
+    private BigDecimal overhoursday;
+    private BigDecimal addoverhoursday;
+
 	public String getUserid() {
 		return userid;
 	}
-	public void setUserid(String userid) {
-		this.userid = userid;
+	public String getWorkyear() {
+		return workyear;
 	}
-	public String getYear() {
-		return year;
+	public void setWorkyear(String workyear) {
+		this.workyear = workyear;
 	}
-	public void setYear(String year) {
-		this.year = year;
+	public String getWorkmonth() {
+		return workmonth;
 	}
-	public String getMonth() {
-		return month;
+	public void setWorkmonth(String workmonth) {
+		this.workmonth = workmonth;
 	}
-	public void setMonth(String month) {
-		this.month = month;
+	public String getWorkday() {
+		return workday;
 	}
-	public String getDay() {
-		return day;
-	}
-	public void setDay(String day) {
-		this.day = day;
+	public void setWorkday(String workday) {
+		this.workday = workday;
 	}
 	public String getStart_h() {
 		return start_h;
@@ -91,17 +93,40 @@ public class Workmonth {
 	public void setModification_time(Date modification_time) {
 		this.modification_time = modification_time;
 	}
-	public String getWeekendflg() {
-		return weekendflg;
+	public String getWeekendflag() {
+		return weekendflag;
 	}
-	public void setWeekendflg(String weekendflg) {
-		this.weekendflg = weekendflg;
+	public void setWeekendflag(String weekendflag) {
+		this.weekendflag = weekendflag;
 	}
-	public String getHolidayflg() {
-		return holidayflg;
+	public String getHolidayflag() {
+		return holidayflag;
 	}
-	public void setHolidayflg(String holidayflg) {
-		this.holidayflg = holidayflg;
+	public void setHolidayflag(String holidayflag) {
+		this.holidayflag = holidayflag;
 	}
+	public void setUserid(String userid) {
+		this.userid = userid;
+	}
+	public BigDecimal getWorkhoursday() {
+		return workhoursday;
+	}
+	public void setWorkhoursday(BigDecimal workhoursday) {
+		this.workhoursday = workhoursday;
+	}
+	public BigDecimal getOverhoursday() {
+		return overhoursday;
+	}
+	public void setOverhoursday(BigDecimal overhoursday) {
+		this.overhoursday = overhoursday;
+	}
+	public BigDecimal getAddoverhoursday() {
+		return addoverhoursday;
+	}
+	public void setAddoverhoursday(BigDecimal addoverhoursday) {
+		this.addoverhoursday = addoverhoursday;
+	}
+
+
 
 }

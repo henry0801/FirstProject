@@ -16,11 +16,23 @@
 			<param-name>forceRequestEncoding</param-name>
 			<param-value>true</param-value>
 		</init-param>
+
 	</filter>
 	<filter-mapping>
 		<filter-name>characterEncodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+
+	<!--spring security2019/10/09追加 -->
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 
 	<servlet>
 		<servlet-name>springMVC</servlet-name>
@@ -31,23 +43,24 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+
 	<servlet-mapping>
 		<servlet-name>springMVC</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 
-	<!-- needed for ContextLoaderListener -->
-	<context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:mvc-config.xml</param-value>
-	</context-param>
-	<!-- Bootstraps the root web application context before servlet initialization -->
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 
 	<welcome-file-list>
-		<welcome-file>a.jsp</welcome-file>
+    	<welcome-file>loginForm.jsp</welcome-file>
 	</welcome-file-list>
+
+	<!-- needed for ContextLoaderListener -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:mvc-config.xml,classpath:security-context.xml</param-value>
+	</context-param>
 
 </web-app>

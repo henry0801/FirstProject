@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.WorkmonthlyMapper">
+    <resultMap id="WorkmonthlyResult" type="com.entity.Workmonthly">
+        <result column="userid" property="userid" />
+        <result column="workyear" property="workyear" />
+        <result column="workmonth" property="workmonth" />
+        <result column="workday" property="workday" />
+        <result column="status" property="status" />
+        <result column="deleteflag" property="deleteflag" />
+        <result column="workhoursmonth" property="workhoursmonth" />
+        <result column="overhoursmonth" property="overhoursmonth" />
+        <result column="creation_time" property="creation_time" />
+        <result column="modification_time" property="modification_time" />
+    </resultMap>
+	<select id="getWorkmonthlyById" resultMap="WorkmonthlyResult">
+	SELECT userid, workyear, workmonth, status, deleteflag, workhoursmonth, overhoursmonth
+	FROM workmonthly
+	WHERE userid = #{userid}
+	AND workyear = #{workyear}
+	AND workmonth = #{workmonth}
+	</select>
+	<update id="updateWorkmonthlyById">
+	UPDATE workmonthly set status = #{status}, deleteflag = #{deleteflag}, workhoursmonth = #{workhoursmonth}, overhoursmonth = #{overhoursmonth}
+	WHERE userid = #{userid}
+	AND workyear = #{workyear}
+	AND workmonth = #{workmonth}
+	</update>
+	<insert id="insertWorkmonthlyById">
+	INSERT INTO  workmonthly (userid, workyear, workmonth, status, deleteflag, workhoursmonth, overhoursmonth)
+	VALUES (#{userid},#{workyear},#{workmonth},#{status},#{deleteflag},#{workhoursmonth},#{overhoursmonth})
+	</insert>
+	<delete id="deleteWorkmonthlyById">
+	DELETE
+	FROM workmonthly
+	WHERE userid = #{userid}
+	AND workyear = #{workyear}
+	AND workmonth = #{workmonth}
+	</delete>
+</mapper>

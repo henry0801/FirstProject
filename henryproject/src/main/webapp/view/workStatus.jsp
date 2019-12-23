@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@ page import="java.util.*" %>
 <!DOCTYPE>
 <html>
@@ -13,38 +14,28 @@
 tr.graytd{
 	background-color: rgb(219, 219, 219);
 }
+a.link{
+  text-decoration: none;  /* 下線等を消す。 */
 </style>
-<%
-Map<String, String> yearList = new TreeMap<String, String>();
-yearList.put("", "");
-yearList.put("2019", "2019");
-yearList.put("2020", "2020");
-yearList.put("2021", "2021");
-Map<String, String> monthList = new TreeMap<String, String>();
-monthList.put("", "");
-monthList.put("01", "01");
-monthList.put("02", "02");
-monthList.put("03", "03");
-monthList.put("04", "04");
-monthList.put("05", "05");
-monthList.put("06", "06");
-monthList.put("07", "07");
-monthList.put("08", "08");
-monthList.put("09", "09");
-monthList.put("10", "10");
-monthList.put("11", "11");
-monthList.put("12", "12");
-session.setAttribute("yearList",yearList);
-session.setAttribute("monthList",monthList);
-%>
+<script>
+function allcheck(object){
+	var elementLength = document.getElementsByName("taisyo").length;
+	for(i=0;i<elementLength;i++){
+		document.getElementsByName("taisyo")[i].checked = object.checked;
+	}
+
+}
+</script>
+<%@ include file="mainPanel.jsp"%>
 <body>
     <h1>
-        勤務入力状況
+        勤務表入力状況
     </h1>
     <form:form action="/workStatus" modelAttribute="workStatusForm">
     				<table border="0" id="itemtable">
 						<tr>
 							<td><input type="submit" name="return" value="戻る" /><td>
+							<td></td>
 						</tr>
 						<tr>
 							<td><form:select path="workYear">
@@ -54,41 +45,60 @@ session.setAttribute("monthList",monthList);
 									<form:options items="${monthList}" />
 								</form:select>月</td>
 							<td><input type="submit" name="search" value="検索"/></td>
+							<sec:authorize access="hasRole('ADMIN')">
+								<td>&nbsp;<input type="submit" name="multiDownLoad" value="勤務表一括ダウンロード（管理者用）"/></td>
+							</sec:authorize>
 						</tr>
+
+
 					</table>
 
         <table border="1">
-            <tbody>
             	<tr class="graytd">
+            	<sec:authorize access="hasRole('ADMIN')">
+            		<th><input type="checkbox"  onclick="allcheck(this)" checked/></th>
+            	</sec:authorize>
                 <th>連番</th>
                 <th>ユーザID</th>
                 <th>社員名</th>
-                <th>勤務表</th>
-                <th>備考</th>
+                <th>勤務表入力状況</th>
+                <th>勤務表確定状況</th>
                 </tr>
                 <tr>
-                <c:forEach var="employee" items="${employees}" varStatus="status">
+                <c:forEach var="employee" items="${employeeDtoList}" varStatus="status">
                     <tr>
-                        <td><c:out value="${status.index+1}"/></td>
+                    	<sec:authorize access="hasRole('ADMIN')">
+                    		<td align="center"><input type="checkbox" name="taisyo" value="${status.index}" checked/></td>
+                    	</sec:authorize>
+                        <td align="center"><c:out value="${status.index+1}"/></td>
                         <td><c:out value="${employee.userid}"/></td>
                         <td><c:out value="${employee.username}"/></td>
-                        <td>
-                        	<a href="/workInput/link?id=${employee.userid}&name=${employee.username}">
-                        	<c:choose>
-                        	<c:when test="${employee.countOfWorkInput>0}" >入力あり</c:when>
-                        	<c:otherwise>未入力</c:otherwise>
-                        	</c:choose>
-                        	</a>
+						<td align="center">
+							<sec:authorize access="hasRole('ADMIN') || ${username==employee.userid}">
+	                        	<a href="/workInput/link?userid=${employee.userid}&employeename=${employee.username}" class="link">
+	                        	<c:choose>
+	                        	<c:when test="${employee.status==1}" >入力あり</c:when>
+	                        	<c:otherwise>未入力</c:otherwise>
+	                        	</c:choose>
+	                        	</a>
+                        	</sec:authorize>
+                        	<sec:authorize access="hasRole('USER') && ${username!=employee.userid}">
+	                        	<c:choose>
+	                        	<c:when test="${employee.status==1}" >入力あり</c:when>
+	                        	<c:otherwise>未入力</c:otherwise>
+	                        	</c:choose>
+                        	</sec:authorize>
                         </td>
-                        <td><c:out value=""/></td>
+                        <td align="center">未確定</td>
                     </tr>
                 </c:forEach>
                 </tr>
-            </tbody>
         </table>
 
-        <br/>
-        <input type="submit" name="test1" value="test1"/><input type="submit" name="test2" value="test2"/>message:${message}<br/>
+        <%-- <br/>
+        <input type="submit" name="test1" value="test1"/><input type="submit" name="test2" value="test2"/>message:${message}
+        <br/> --%>
+
     </form:form>
 </body>
 </html>

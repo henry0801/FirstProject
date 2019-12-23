@@ -9,7 +9,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache"/>
 <meta name="viewport" content="width=device-width" />
-<title>勤務表実績（${name}）</title>
+<title>勤務表実績（${employeename}）</title>
 </head>
 <style>
 tr.graytd{
@@ -72,37 +72,14 @@ function clearselect(select){
 		return confirm("該当月データを最初から作り直しますか？");
 	}
 </script>
+<%@ include file="mainPanel.jsp"%>
 <body>
 
-<%
-Map<String, String> yearList = new TreeMap<String, String>();
-yearList.put("", "");
-yearList.put("2018", "2018");
-yearList.put("2019", "2019");
-yearList.put("2020", "2020");
-Map<String, String> monthList = new TreeMap<String, String>();
-monthList.put("", "");
-monthList.put("01", "01");
-monthList.put("02", "02");
-monthList.put("03", "03");
-monthList.put("04", "04");
-monthList.put("05", "05");
-monthList.put("06", "06");
-monthList.put("07", "07");
-monthList.put("08", "08");
-monthList.put("09", "09");
-monthList.put("10", "10");
-monthList.put("11", "11");
-monthList.put("12", "12");
-session.setAttribute("yearList",yearList);
-session.setAttribute("monthList",monthList);
-%>
-
-	<h1>勤務表実績（${name}）</h1>
-	<form:form action="/workInput" modelAttribute="workmonthForm">
-	<input type="hidden" name="id" value="${workmonthForm.id}">
-	<input type="hidden" name="totalWorkHours" value="${workmonthForm.totalWorkHours}">
-	<input type="hidden" name="totalOverHours" value="${workmonthForm.totalOverHours}">
+	<h1>勤務表実績（${employeename}）</h1>
+	<form:form action="/workInput" modelAttribute="workdailyForm">
+	<input type="hidden" name="userid" value="${workdailyForm.userid}">
+	<input type="hidden" name="totalWorkHours" value="${workdailyForm.totalWorkHours}">
+	<input type="hidden" name="totalOverHours" value="${workdailyForm.totalOverHours}">
 
 		<table border="0">
 			<tr>
@@ -124,7 +101,7 @@ session.setAttribute("monthList",monthList);
 						<tr>
 							<td><input type="submit" name="recreate" onclick="return show_confirm();" value="新規作成" /></td>
 							<td><input type="submit" name="save" value="保存" /></td>
-							<td><input type="submit" name="print" value="勤务表印刷" /></td>
+							<td><input type="submit" name="print" value="勤務表印刷" /></td>
 						</tr>
 					</table>
 				</td>
@@ -132,11 +109,11 @@ session.setAttribute("monthList",monthList);
 					<table border="1" id="kousutable">
 						<tr>
 							<td class="graytd">時間数合計：</td>
-							<td><label id="totalhours" for="totalhours">${workmonthForm.totalWorkHours}</label></td>
+							<td><label id="totalhours" for="totalhours">${workmonthlyDto.workhoursmonth}</label></td>
 						</tr>
 						<tr>
 							<td class="graytd">残業時間数合計：</td>
-							<td><label id="addoverhours" for="addoverhours">${workmonthForm.totalOverHours}</label></td>
+							<td><label id="addoverhours" for="addoverhours">${workmonthlyDto.overhoursmonth}</label></td>
 						</tr>
 					</table>
 				</td>
@@ -159,48 +136,48 @@ session.setAttribute("monthList",monthList);
                 <th>時間クリア</th>
                 <th>出張先</th>
                 <th>備考</th>
-            <c:forEach var="workmonth" items="${workmonths}" varStatus="wstatus">
-            <input type="hidden" name="userid" value="${workmonth.userid}">
-            <input type="hidden" name="year" value="${workmonth.year}">
-            <input type="hidden" name="month" value="${workmonth.month}">
-            <input type="hidden" name="day" value="${workmonth.day}">
-			<tr class="${(workmonth.weekendflg == '1' || workmonth.holidayflg == '1') ? 'even' : 'odd'}">
+            <c:forEach var="workdaily" items="${workmonthlyDto.workdailyDtoList}" varStatus="wstatus">
+            <input type="hidden" name="useridarry" value="${workdaily.userid}">
+            <input type="hidden" name="workyeararry" value="${workdaily.workyear}">
+            <input type="hidden" name="workmontharry" value="${workdaily.workmonth}">
+            <input type="hidden" name="workdayarry" value="${workdaily.workday}">
+			<tr class="${(workdaily.weekendflag == '1' || workdaily.holidayflag == '1') ? 'even' : 'odd'}">
 				<c:choose>
-				<c:when test="${workmonth.weekendflg == '1' || workmonth.holidayflg == '1'}" >
+				<c:when test="${workdaily.weekendflag == '1' || workdaily.holidayflag == '1'}" >
 				<td style="color:red">
-				<fmt:formatDate value="${workmonth.date}" type="DATE" pattern="dd日（E）" />
+				<fmt:formatDate value="${workdaily.date}" type="DATE" pattern="dd日（E）" />
 				</td>
 				</c:when>
 				<c:otherwise>
 				<td>
-				<fmt:formatDate value="${workmonth.date}" type="DATE" pattern="dd日（E）" />
+				<fmt:formatDate value="${workdaily.date}" type="DATE" pattern="dd日（E）" />
 				</td>
 				</c:otherwise>
 				</c:choose>
 				<td>
-				<form:select path="start_h[${wstatus.index}]">
+				<form:select path="start_harry[${wstatus.index}]">
 					<form:options items="${hourList}"/>
 				</form:select>:
-				<form:select path="start_m[${wstatus.index}]">
+				<form:select path="start_marry[${wstatus.index}]">
 					<form:options items="${miniteList}"/>
 				</form:select>
 				</td>
                 <td>
-				<form:select path="end_h[${wstatus.index}]">
+				<form:select path="end_harry[${wstatus.index}]">
 					<form:options items="${hourList}"/>
 				</form:select>:
-				<form:select path="end_m[${wstatus.index}]">
+				<form:select path="end_marry[${wstatus.index}]">
 					<form:options items="${miniteList}"/>
 				</form:select>
 				</td>
-                <td><label id="worktime" for="worktime">${workmonth.workHours}</label></td>
-                <td><label id="overtime" for="overtime">${workmonth.overHours}</label></td>
-                <td><label id="addovertime" for="addovertime">${workmonth.addOverHours}</label></td>
+                <td><label id="worktime" for="worktime">${workdaily.workhoursday}</label></td>
+                <td><label id="overtime" for="overtime">${workdaily.overhoursday}</label></td>
+                <td><label id="addovertime" for="addovertime">${workdaily.addoverhoursday}</label></td>
                 <td align="center">
 				<input type="button" id="clear" value="クリア" onclick="cleardata(this)"/>
 				</td>
-                <td><input type="text" name="biko1" value="${workmonth.biko1}" size="5"></td>
-                <td><input type="text" name="biko2" value="${workmonth.biko2}" size="13"></td>
+                <td><input type="text" name="biko1arry" value="${workdaily.biko1}" size="5"></td>
+                <td><input type="text" name="biko2arry" value="${workdaily.biko2}" size="13"></td>
 			</tr>
 			</c:forEach>
 		</tbody>

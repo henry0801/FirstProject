@@ -57,12 +57,16 @@ public class EmployeeController {
 		String[] userid = employeeForm.getUserid_exist();
 		String[] username = employeeForm.getUsername_exist();
 		String[] biko = employeeForm.getBiko_exist();
+		String[] genba = employeeForm.getGenba_exist();
+		String[] place = employeeForm.getPlace_exist();
 		String[] delete_flg = employeeForm.getDelete_flg_exist();
 
 		List<EmployeeDto> employees_new = new ArrayList<>();
 		String[] userid_new = employeeForm.getUserid_new();
 		String[] username_new = employeeForm.getUsername_new();
 		String[] biko_new = employeeForm.getBiko_new();
+		String[] genba_new = employeeForm.getGenba_new();
+		String[] place_new = employeeForm.getPlace_new();
 		String[] delete_flg_new = employeeForm.getDelete_flg_new();
 
 		List<EmployeeDto> statistics_delete = new ArrayList<>();
@@ -72,18 +76,19 @@ public class EmployeeController {
 
   				EmployeeDto employeeDto = new EmployeeDto();
 
-  				//pglk社員Pass
-  				if ("admin1".equals(userid[i])||"admin2".equals(userid[i])||"admin3".equals(userid[i])||"admin4".equals(userid[i])) {
-					continue;
-				}
-
   				employeeDto.setUserid(userid[i]);
   				employeeDto.setUsername(username[i]);
   				employeeDto.setBiko(biko[i]);
+  				employeeDto.setGenba(genba[i]);
+  				employeeDto.setPlace(place[i]);
 
   				if ("0".equals(delete_flg[i])) {
   					employees_after.add(employeeDto);
 				}else if ("1".equals(delete_flg[i])) {
+					//pglk社員Pass
+	  				if ("admin1".equals(userid[i])||"admin2".equals(userid[i])||"admin3".equals(userid[i])||"admin4".equals(userid[i])) {
+						continue;
+					}
 					statistics_delete.add(employeeDto);
 				}
   			}
@@ -117,6 +122,8 @@ public class EmployeeController {
 				employeeDto.setUserid(userid_new[i]);
 				employeeDto.setUsername(username_new.length > 0 ? username_new[i] : "");
 				employeeDto.setBiko(biko_new.length > 0 ? biko_new[i] : "");
+				employeeDto.setGenba(genba_new.length > 0 ? genba_new[i] : "");
+				employeeDto.setPlace(place_new.length > 0 ? place_new[i] : "");
 
 				employees_new.add(employeeDto);
 			}
